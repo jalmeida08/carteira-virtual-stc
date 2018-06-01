@@ -1,0 +1,64 @@
+<div class="row">
+        <div class="col-md-6">
+            <form name="form" method="POST" (submit)="salvar()">
+                <div class="form-group">
+                    <label for="nome">Nome:</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="nome"
+                        id="nome"
+                        [(ngModel)]="pessoa.nome"
+                        required
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="dataNascimento">Data de Nascimento:</label>
+                    <input
+                        type="date"
+                        class="form-control"
+                        name="dataNascimentonome"
+                        id="dataNascimento"
+                        [(ngModel)]="pessoa.dataNascimento"
+                        required
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input
+                        class="form-control"
+                        type="text"
+                        name="email"
+                        id="email"
+                        [(ngModel)]="usuario.email"
+                        required
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="senha">senha</label>
+                    <input
+                        class="form-control"
+                        type="password"
+                        name="senha"
+                        id="senha"
+                        [(ngModel)]="usuario.senha"
+                        (ngModelChange)="checarSenha()"
+                    >
+                        
+                </div>
+                <div class="form-group">
+                    <label for="confirmarSenha">Confirme a senha</label>
+                    <span class="mensagemErro" *ngIf="senhasDiferentes">As senhas não conferem</span>
+                        <input
+                            class="form-control"
+                            type="password"
+                            name="confirmarSenha"
+                            id="confirmarSenha"
+                            [(ngModel)]="confirmarSenha"
+                            (ngModelChange)="checarSenha()"
+                        >
+                    </div>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </form>
+        </div>
+    </div>
