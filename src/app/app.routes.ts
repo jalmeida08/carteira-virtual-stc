@@ -8,6 +8,7 @@ import { UsuarioCadastroComponent } from './usuario/form/usuario-cadastro.compon
 const appRoutes: Routes = [
     { path: 'pessoa', component: PessoaComponent },
     { path: 'pessoa/cadastrar', component: PessoaFormComponent },
+    { path: 'pessoa/form/:id', component: PessoaFormComponent },
     { path: 'usuario', component: UsuarioComponent },
     { path: 'usuario/cadastrar', component: UsuarioCadastroComponent },
     { path: '**', redirectTo: 'pessoa' }

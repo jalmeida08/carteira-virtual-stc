@@ -43,7 +43,8 @@ export class UsuarioComponent implements OnInit {
         this.usuarios = res;
       }, error => {
         console.log("erro ", error);
-      });
+      }
+    );
   }
 
 
@@ -69,7 +70,8 @@ export class UsuarioComponent implements OnInit {
             mensagemDesaque: "Erro!",
             tipoMensagem: "danger"
           });
-        });
+        }
+      );
     }
   }
 

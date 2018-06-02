@@ -37,6 +37,14 @@ export class PessoaService {
       );
   };
 
+  public getPessoa(idPessoa: number): Observable<Pessoa> {
+    return this._http
+      .get(this._url + idPessoa)
+      .pipe(
+        map(res => res.json())
+      );
+  }
+
   public remover(pessoa: Pessoa): Observable<Response> {
     return this._http
       .delete(this._url + pessoa.idPessoa);
