@@ -50,25 +50,27 @@ export class UsuarioComponent implements OnInit {
   public remover(usuario: Usuario): void {
     let novaLista: Usuario[] = new Array<Usuario>();
     let indice: number;
-    this._usuarioService
-      .remover(usuario)
-      .subscribe(res => {
-        novaLista = this.usuarios.slice(0);
-        indice = novaLista.indexOf(usuario);
-        novaLista.splice(indice, 1);
-        this.usuarios = novaLista;
-        this.mensagens.push({
-          mensagem: "Excluido com sucesso",
-          mensagemDesaque: "Sucesso!",
-          tipoMensagem: "success"
+    if (confirm("Deseja realmente remover?")) {
+      this._usuarioService
+        .remover(usuario)
+        .subscribe(res => {
+          novaLista = this.usuarios.slice(0);
+          indice = novaLista.indexOf(usuario);
+          novaLista.splice(indice, 1);
+          this.usuarios = novaLista;
+          this.mensagens.push({
+            mensagem: "Excluido com sucesso",
+            mensagemDesaque: "Sucesso!",
+            tipoMensagem: "success"
+          });
+        }, error => {
+          this.mensagens.push({
+            mensagem: "Erro ao excluir " + error,
+            mensagemDesaque: "Erro!",
+            tipoMensagem: "danger"
+          });
         });
-      }, error => {
-        this.mensagens.push({
-          mensagem: "Erro ao excluir " + error,
-          mensagemDesaque: "Erro!",
-          tipoMensagem: "danger"
-        });
-      })
+    }
   }
 
   public carregarUsuario(usuario: Usuario): void {
