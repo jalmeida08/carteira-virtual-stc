@@ -1,10 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { UsuarioService } from './usuario.service';
+import { UsuarioComponent } from './usuario.component';
+import { UsuarioCadastroComponent } from './form/usuario-cadastro.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
-  imports: [
-    CommonModule
+  declarations: [
+    UsuarioComponent,
+    UsuarioCadastroComponent
   ],
-  declarations: []
+  imports: [
+    CommonModule,
+    NgbModule.forRoot(),
+    FormsModule
+  ],
+  exports: [],
+  providers: [UsuarioService],
 })
 export class UsuarioModule { }

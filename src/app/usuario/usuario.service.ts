@@ -48,6 +48,7 @@ export class UsuarioService {
   }
 
   public remover(usuario: Usuario): Observable<Response> {
+    console.log(usuario);
     return this._http
       .delete(
         this._url + usuario.idUsuario

@@ -3,6 +3,7 @@ import { UsuarioService } from './usuario.service';
 import { PessoaService } from '../pessoa/pessoa.service';
 import { Usuario } from './usuario';
 import { Pessoa } from '../pessoa/pessoa';
+import { Mensagem } from './mensagem';
 
 @Component({
   selector: 'app-usuario',
@@ -13,8 +14,10 @@ export class UsuarioComponent implements OnInit {
 
   public usuario: Usuario = new Usuario();
   public pessoa: Pessoa = new Pessoa();
+  public usuarios: Usuario[] = new Array<Usuario>();
   public confirmarSenha: string;
-  public senhasDiferentes : boolean = false;
+  public senhasDiferentes: boolean = false;
+  public mensagens: Mensagem[] = new Array<Mensagem>();
 
   constructor(
     private _usuarioService: UsuarioService,
@@ -24,53 +27,52 @@ export class UsuarioComponent implements OnInit {
     this._pessoaService = _pessoaService;
   }
 
-  public salvar(): void {
-    this.salvarPessoa();
-  }
-
-  private salvarPessoa() {
-    console.log("salvando pessoa");
-    this._pessoaService
-      .salvar(this.pessoa)
-      .subscribe(res => {
-        this.buscarPessoaNomeDtNascimento();
-      }, error => {
-        console.log(error);
-      });
-  }
-
-  private buscarPessoaNomeDtNascimento() {
-    console.log("buscarPessoaNomeDtNascimento");
-    this._pessoaService
-      .buscarNomeDtNascimento(this.pessoa)
-      .subscribe(res => {
-        this.pessoa = res;
-        this.salvarUsuario(this.pessoa);
-      }, error => {
-        console.log(error);
-      });
-  }
-
-  private salvarUsuario(pessoa: Pessoa) {
-    this.usuario.pessoa = pessoa;
-    this._usuarioService
-      .salvar(this.usuario)
-      .subscribe(res => {
-        console.log(res);
-      }, error => {
-        console.log(error);
-      });
-  }
-
-  public checarSenha(){
-    if(this.usuario.senha === this.confirmarSenha){
-      this.senhasDiferentes = false;
-    }else{
-      this.senhasDiferentes = true
-    }
-  }
-
   ngOnInit() {
+    this.listar();
+  }
+
+  public closeAlert(alert: Mensagem) {
+    const index: number = this.mensagens.indexOf(alert);
+    this.mensagens.splice(index, 1);
+  }
+
+  public listar(): void {
+    this._usuarioService
+      .listar()
+      .subscribe(res => {
+        this.usuarios = res;
+      }, error => {
+        console.log("erro ", error);
+      });
+  }
+
+
+  public remover(usuario: Usuario): void {
+    let novaLista: Usuario[] = new Array<Usuario>();
+    let indice: number;
+    this._usuarioService
+      .remover(usuario)
+      .subscribe(res => {
+        novaLista = this.usuarios.slice(0);
+        indice = novaLista.indexOf(usuario);
+        novaLista.splice(indice, 1);
+        this.usuarios = novaLista;
+        this.mensagens.push({
+          mensagem: "Excluido com sucesso",
+          mensagemDesaque: "Sucesso!",
+          tipoMensagem: "success"
+        });
+      }, error => {
+        this.mensagens.push({
+          mensagem: "Erro ao excluir " + error,
+          mensagemDesaque: "Erro!",
+          tipoMensagem: "danger"
+        });
+      })
+  }
+
+  public carregarUsuario(usuario: Usuario): void {
+
   }
 
 }

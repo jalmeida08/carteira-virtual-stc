@@ -3,11 +3,13 @@ import { NgModule } from '@angular/core';
 import { PessoaComponent } from './pessoa/pessoa.component';
 import { UsuarioComponent } from './usuario/usuario.component';
 import { PessoaFormComponent } from './pessoa/form/pessoa-form.component';
+import { UsuarioCadastroComponent } from './usuario/form/usuario-cadastro.component';
 
 const appRoutes: Routes = [
     { path: 'pessoa', component: PessoaComponent },
-    { path: 'usuario', component: UsuarioComponent },
     { path: 'pessoa/cadastrar', component: PessoaFormComponent },
+    { path: 'usuario', component: UsuarioComponent },
+    { path: 'usuario/cadastrar', component: UsuarioCadastroComponent },
     { path: '**', redirectTo: 'pessoa' }
 ];
 

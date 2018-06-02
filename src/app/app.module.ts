@@ -1,33 +1,23 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpModule } from "@angular/http";
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule } from '@angular/forms';
+import { routing } from './app.routes';
 
 import { AppComponent } from './app.component';
 import { PessoaModule } from './pessoa/pessoa.module';
+import { UsuarioModule } from './usuario/usuario.module';
 
-import { routing } from './app.routes';
-import { registerLocaleData } from '@angular/common';
-import { UsuarioComponent } from './usuario/usuario.component';
-import { UsuarioService } from './usuario/usuario.service';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    UsuarioComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
-    NgbModule.forRoot(),
     routing,
-    FormsModule,
     HttpModule,
-    PessoaModule
+    PessoaModule,
+    UsuarioModule
   ],
-  providers: [
-    UsuarioService
-  ],
+  providers: [],
   bootstrap: [AppComponent],
 
 })
