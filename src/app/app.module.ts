@@ -6,16 +6,22 @@ import { routing } from './app.routes';
 import { AppComponent } from './app.component';
 import { PessoaModule } from './pessoa/pessoa.module';
 import { UsuarioModule } from './usuario/usuario.module';
+import { DespesaModule } from "./despesa/despesa.module"
+import { PagamentoModule } from './pagamento/pagamento.module';
 
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent
+  ],
   imports: [
     BrowserModule,
     routing,
     HttpModule,
     PessoaModule,
-    UsuarioModule
+    UsuarioModule,
+    DespesaModule,
+    PagamentoModule
   ],
   providers: [],
   bootstrap: [AppComponent],

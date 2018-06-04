@@ -4,6 +4,8 @@ import { UsuarioService } from '../usuario.service';
 import { Pessoa } from '../../pessoa/pessoa';
 import { Usuario } from '../usuario';
 import { Mensagem } from '../mensagem';
+import { ActivatedRoute, Router } from '@angular/router';
+import { PARAMETERS } from '@angular/core/src/util/decorators';
 
 @Component({
     selector: 'app-usuario-cadastro',
@@ -19,13 +21,31 @@ export class UsuarioCadastroComponent implements OnInit {
 
     constructor(
         private _usuarioService: UsuarioService,
-        private _pessoaService: PessoaService
+        private _pessoaService: PessoaService,
+        private _activatedRoute: ActivatedRoute,
+        private _router: Router
     ) {
         this._usuarioService = _usuarioService;
         this._pessoaService = _pessoaService;
+        this._activatedRoute = _activatedRoute;
+        this._router = _router;
     }
 
-    ngOnInit(): void { }
+    ngOnInit(): void {
+        this.checarParamentro();
+    }
+
+    public checarParamentro() {
+        let idUsuario: number;
+        this._activatedRoute
+            .params
+            .subscribe(params => {
+                idUsuario = params['id'];
+            });
+        if (idUsuario) {
+            this.buscarUsuario(idUsuario);
+        }
+    }
 
     public salvar(): void {
         this.salvarPessoa();
@@ -95,5 +115,17 @@ export class UsuarioCadastroComponent implements OnInit {
         } else {
             this.senhasDiferentes = true
         }
+    }
+
+    public buscarUsuario(idUsuario: number) {
+        this._usuarioService
+            .getUsuario(idUsuario)
+            .subscribe(res => {
+                this.usuario.email = res.email;
+                this.usuario.idUsuario = res.idUsuario;
+                this.pessoa = res.pessoa;
+            }, error => {
+                console.log("erro ao carregar usuario");
+            });
     }
 }

@@ -5,6 +5,7 @@ import { UsuarioService } from './usuario.service';
 import { UsuarioComponent } from './usuario.component';
 import { UsuarioCadastroComponent } from './form/usuario-cadastro.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { routing } from '../app.routes';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
   imports: [
     CommonModule,
     NgbModule.forRoot(),
-    FormsModule
+    FormsModule,
+    routing 
   ],
   exports: [],
   providers: [UsuarioService],

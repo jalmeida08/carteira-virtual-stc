@@ -21,6 +21,7 @@
                         <button class="btn btn-primary dropdown-toggle-split" ngbDropdownToggle></button>
                         <div class="dropdown-menu" ngbDropdownMenu>
                             <button class="dropdown-item" (click)="remover(usuario)">Remover</button>
+                            <button class="dropdown-item" [routerLink]="['/usuario/form', usuario.idUsuario]">Editar</button>
                         </div>
                     </div>
                 </div>
