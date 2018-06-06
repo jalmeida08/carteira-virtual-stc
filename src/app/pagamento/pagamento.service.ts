@@ -7,10 +7,12 @@ import { Pessoa } from '../pessoa/pessoa';
 
 @Injectable()
 export class PagamentoService {
+    
     private _url: string = "http://localhost:8080/carteiravirtual/resources/pagamento";
+    private _headers: Headers;
+
     constructor(
         private _http: Http,
-        private _headers: Headers
     ) {
         this._http = _http;
     }
@@ -21,17 +23,6 @@ export class PagamentoService {
                 this._url,
                 pagamento,
                 { headers: this._headers }
-            );
-    }
-
-    public listarPessoas(): Observable<Pessoa[]> {
-        let urlPessoa: string = 'http://localhost:8080/carteiravirtual/resources/pessoa/';
-        return this._http
-            .get(urlPessoa)
-            .pipe(
-                map(
-                    res => res.json()
-                )
             );
     }
 }

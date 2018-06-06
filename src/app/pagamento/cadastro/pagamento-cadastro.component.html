@@ -1,0 +1,46 @@
+<div class="col-md-6">
+    <form method="POST" (submit)="salvar()">
+        <div class="form-group">
+            <label for="valor">Valor</label>
+            <input class="form-control" type="text" id="valor" name="valor" [(ngModel)]="pagamento.valor">
+        </div>
+        <div class="form-group">
+            <label for="dataPagamento">Data do pagamento</label>
+            <input class="form-control" type="date" id="dataPagamento" name="dataPagamento" [(ngModel)]="pagamento.dataPagamento">
+        </div>
+        <div class="form-check" ng-click="vm.invalidarStatusPagamento()">
+            <input type="checkbox" class="form-check-input" name="fixo" id="fixo" [(ngModel)]="pagamento.fixo">
+            <label class="form-check-label" for="fixo">Pagamento fixo?</label>
+        </div>
+        <div class="form-group">
+            <label for="statusPagamento">Status do pagamento</label>
+            <select ng-disabled="vm.pagamento.fixo" id="statusPagamento" name="statusPagamento" [(ngModel)]="pagamento.statusPagamento"
+                class="form-control">
+                <option selected value="">Selecione</option>
+                <option value="ARECEBER">A receber</option>
+                <option value="RECEBIDO">Recebido</option>
+            </select>
+        </div>
+        <div>
+            <input type="checkbox" class="form-check-input" name="possuiPessoaFisica" id="possuiPessoaFisica">
+            <label class="form-check-label" for="possuiPessoaFisica">Possui pessoa física pagadora?</label>
+        </div>
+        <div class="form-group">
+            <label for="pessoaPagadora">Pessoa pagadora</label>
+
+            <div class="form-group">
+                <label class="col-form-label" for="pessoa">Pessoa</label>
+                <select class="form-control" [(ngModel)]="pagamento.pessoa" name="pessoa" id="pessoa" >
+                    <option value="">Selecione</option>
+                    <option *ngFor="let pessoa of pessoas" ([value])="pessoa.idPessoa">{{pessoa.nome}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="descricao">Descrição</label>
+            <textarea class="form-control" id="descricao" placeholder="Ex.: Salário da empresa *****, encontrar ciclano em tal ponto para o pagamento, pagamento proveniente de venda de um veículo..."
+                [(ngModel)]="pagamento.descricao" maxlength="250" rows="3"></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit">Salvar</button>
+    </form>
+</div>
