@@ -3,6 +3,7 @@ import { PessoaService } from '../../pessoa/pessoa.service';
 import { PagamentoService } from '../pagamento.service';
 import { Pessoa } from '../../pessoa/pessoa';
 import { Pagamento } from '../pagamento';
+import * as moment from 'moment/moment';
 
 @Component({
     selector: 'app-pagamento-cadastro',
@@ -23,14 +24,29 @@ export class PagamentoCadastroComponent implements OnInit {
     }
 
     public salvar() {
-        console.log(this.pagamento);
-        /* this._pagamentoService
+        this._pessoaService
+            .getPessoa(parseInt(this.pagamento.pessoa.toString(), 32))
+            .subscribe(res => {
+                this.pagamento.pessoa = res;
+                console.log(this.pagamento);
+                this.salvarPagamento();
+            }, erro => {
+                console.log("erro ao salvar");
+            });
+    }
+
+    public salvarPagamento() {
+        this._pagamentoService
             .salvar(this.pagamento)
             .subscribe(res => {
                 console.log("salvou");
             }, error => {
                 console.log("error ", error);
-            }); */
+            });
+    }
+
+    public pagamentoFixo(): void {
+        this.pagamento.statusPagamento = undefined;
     }
 
     public listarPessoas() {
@@ -44,6 +60,9 @@ export class PagamentoCadastroComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        let oday : string = moment().format('D MMM YYYY');
+        console.log(oday);
+        console.log("data");
         this.listarPessoas();
     }
 }

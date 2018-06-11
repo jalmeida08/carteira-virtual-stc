@@ -63,7 +63,7 @@ export class PessoaService {
   public buscarNomeDtNascimento(pessoa: Pessoa): Observable<Pessoa> {
     return this._http
       .post(
-        this._url + "buscarNomeDataNascimento",
+        this._url + "buscarNome",
         pessoa,
         { headers: this._headers }
       ).pipe(

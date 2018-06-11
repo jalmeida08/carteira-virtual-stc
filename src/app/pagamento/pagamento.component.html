@@ -1,0 +1,77 @@
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Dt Pagamento</th>
+            <th>Fixo</th>
+            <th>Valor</th>
+            <th>Status</th>
+            <th>Nome devedor</th>
+            <th>Descrição</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let pagamento of pagamentos">
+            <td>{{pagamento.idPagamento}}</td>
+            <td>{{pagamento.dataPagamento}}</td>
+            <td *ngIf="pagamento.fixo">Fixo</td>
+            <td *ngIf="!pagamento.fixo">Não Fixo</td>
+            <td>{{pagamento.valor}}</td>
+            <td>{{pagamento.statusPagamento}}</td>
+            <td>{{pagamento.pessoa.nome}}</td>
+            <td>{{pagamento.descricao}}</td>
+            <td>
+                <div class="btn-group mr-3">
+                    <button type="button" class="btn btn-primary" (click)="openLg(content, pagamento)">Abrir</button>
+                    <div class="btn-group" ngbDropdown role="group" aria-label="Button group with nested dropdown">
+                        <button class="btn btn-primary dropdown-toggle-split" ngbDropdownToggle></button>
+                        <div class="dropdown-menu" ngbDropdownMenu>
+                            <button class="dropdown-item" (click)="openLg(content, pagamento)">Fechar pagamento</button>
+                            <button class="dropdown-item" [routerLink]="['/pagamento/form', pagamento.idPagamento]">Editar</button>
+                            <button class="dropdown-item" (click)="remover(pessoa)">Remover</button>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<ng-template #content let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title text-center">Pagamento</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <ul>
+            <div class="modalIdPagamento">
+                <li><b>Nº: </b>{{pagamento.idPagamento}}</li>
+            </div>
+            <div class="modalDtPagamento">
+                <li><b>Data do Pagamento: </b>{{pagamento.dataPagamento | date:'dd/MM/yyyy'}}</li>
+            </div>
+            <div class="modalPessoa">
+                <li><b>Nome Devedor: </b>{{pagamento.pessoa.nome}}</li>
+            </div>
+            <div class="modalFixo">
+                <li *ngIf="pagamento.fixo"><b>Pagamento Fixo: </b>Sim</li>
+                <li *ngIf="!pagamento.fixo"><b>Pagamento Fixo: </b>Não</li>
+            </div>
+            <div class="modalValor">
+                <li><b>Valor: </b>{{pagamento.valor}}</li>
+            </div>
+            <div class="modalStatus">
+                <li><b>Status: </b>{{pagamento.status}}</li>
+            </div>
+            <div class="modalDescricao">
+                <li><b>Descrição: </b>{{pagamento.descricao}}</li>
+            </div>
+        </ul>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light" (click)="c('Close click')">Close</button>
+    </div>
+</ng-template>

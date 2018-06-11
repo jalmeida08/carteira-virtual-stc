@@ -7,7 +7,7 @@ import { Pessoa } from '../pessoa/pessoa';
 
 @Injectable()
 export class PagamentoService {
-    
+
     private _url: string = "http://localhost:8080/carteiravirtual/resources/pagamento";
     private _headers: Headers;
 
@@ -25,4 +25,26 @@ export class PagamentoService {
                 { headers: this._headers }
             );
     }
+
+    public listarPagamentos(): Observable<Pagamento[]> {
+        return this._http
+            .get(this._url)
+            .pipe(
+                map(res => res.json())
+            );
+    }
+
+    public getPagamento(pagamento: Pagamento): Observable<Pagamento> {
+        return this._http
+            .get(this._url + pagamento.idPagamento)
+            .pipe(
+                map(res => res.json())
+            );
+    }
+
+    public remover(idPagamento: number): Observable<Response> {
+        return this._http
+            .delete(this._url + idPagamento);
+    }
+
 }

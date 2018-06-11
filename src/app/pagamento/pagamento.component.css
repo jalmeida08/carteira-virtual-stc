@@ -1,0 +1,9 @@
+ul{ list-style-type: none;}
+ul > div > li {padding-top: 02px; padding-bottom: 02px; margin-left: 05px;}
+.modalIdPagamento{width: 50%; float: left}
+.modalDtPagamento{width: 50%; float: right}
+.modalFixo{width: 33.333333333%; float: left}
+.modalValor{width: 33.333333333%; float: right}
+.modalStatus{width: 33.333333333%; float: right;}
+.modalPessoa{clear: both}
+.modalDescricao{clear: both}
