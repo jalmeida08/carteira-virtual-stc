@@ -16,6 +16,7 @@ const appRoutes: Routes = [
     { path: 'usuario/form/:id', component: UsuarioCadastroComponent },
     { path: 'pagamento', component: PagamentoComponent },
     { path: 'pagamento/cadastrar', component: PagamentoCadastroComponent },
+    { path: 'pagamento/form/:id', component: PagamentoCadastroComponent },
     { path: '**', redirectTo: 'pessoa' }
 ];
 

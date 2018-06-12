@@ -14,7 +14,7 @@
     <tbody>
         <tr *ngFor="let pagamento of pagamentos">
             <td>{{pagamento.idPagamento}}</td>
-            <td>{{pagamento.dataPagamento}}</td>
+            <td>{{pagamento.dataPagamento | date : 'dd/MM/yyyy'}}</td>
             <td *ngIf="pagamento.fixo">Fixo</td>
             <td *ngIf="!pagamento.fixo">Não Fixo</td>
             <td>{{pagamento.valor}}</td>
@@ -51,7 +51,7 @@
                 <li><b>Nº: </b>{{pagamento.idPagamento}}</li>
             </div>
             <div class="modalDtPagamento">
-                <li><b>Data do Pagamento: </b>{{pagamento.dataPagamento | date:'dd/MM/yyyy'}}</li>
+                <li><b>Data do Pagamento: </b>{{pagamento.dataPagamento| date:'dd/MM/yyyy'}}</li>
             </div>
             <div class="modalPessoa">
                 <li><b>Nome Devedor: </b>{{pagamento.pessoa.nome}}</li>

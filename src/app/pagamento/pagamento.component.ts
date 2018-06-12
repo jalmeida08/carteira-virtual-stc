@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Pagamento } from './pagamento';
 import { PagamentoService } from './pagamento.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-pagamento',
@@ -14,7 +15,8 @@ export class PagamentoComponent implements OnInit {
 
     constructor(
         private _pagamentoService: PagamentoService,
-        private _modalService: NgbModal
+        private _modalService: NgbModal,
+        private _datePipe : DatePipe
     ) {
         this._pagamentoService = _pagamentoService;
     }
@@ -23,7 +25,8 @@ export class PagamentoComponent implements OnInit {
         this._pagamentoService
             .listarPagamentos()
             .subscribe(res => {
-                this.pagamentos = res
+                this.pagamentos = res;
+                //console.log(this._datePipe.transform(res[1].dataPagamento , 'dd/MM/yyyy'));
             }, error => {
                 console.log("erro ", error);
             })

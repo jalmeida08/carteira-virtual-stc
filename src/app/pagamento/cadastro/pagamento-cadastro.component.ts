@@ -4,6 +4,7 @@ import { PagamentoService } from '../pagamento.service';
 import { Pessoa } from '../../pessoa/pessoa';
 import { Pagamento } from '../pagamento';
 import * as moment from 'moment/moment';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'app-pagamento-cadastro',
@@ -17,10 +18,14 @@ export class PagamentoCadastroComponent implements OnInit {
 
     constructor(
         private _pessoaService: PessoaService,
-        private _pagamentoService: PagamentoService
+        private _pagamentoService: PagamentoService,
+        private _activatedRoute: ActivatedRoute,
+        private _router: Router
     ) {
         this._pagamentoService = _pagamentoService;
         this._pessoaService = _pessoaService;
+        this._activatedRoute = _activatedRoute;
+        this._router = _router;
     }
 
     public salvar() {
@@ -59,10 +64,29 @@ export class PagamentoCadastroComponent implements OnInit {
             })
     }
 
+    public buscarPagamento(idPagamento: number): void {
+        this._pagamentoService
+            .getPagamento(idPagamento)
+            .subscribe(res => {
+                this.pagamento = res
+                console.log(res);
+            }, error => {
+                console.log("erro ", error);
+            })
+    }
+
+    public checarParametro(): void {
+        let idPagamento: number;
+        this._activatedRoute.params.subscribe(params => {
+                idPagamento = params["id"];
+            });
+        if (idPagamento) {
+            this.buscarPagamento(idPagamento);
+        }
+    }
+
     ngOnInit(): void {
-        let oday : string = moment().format('D MMM YYYY');
-        console.log(oday);
-        console.log("data");
+        this.checarParametro();
         this.listarPessoas();
     }
 }
