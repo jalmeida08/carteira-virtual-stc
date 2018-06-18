@@ -12,7 +12,7 @@ import { map, filter, catchError, mergeMap } from 'rxjs/operators';
 export class PessoaService {
   private _http: Http;
   private _headers: Headers;
-  private _url: string = "http://localhost:8080/carteiravirtual/resources/pessoa/"
+  private _url: string = "http://localhost:8081/carteiravirtual/resources/pessoa/"
 
   constructor(http: Http) {
     this._http = http;

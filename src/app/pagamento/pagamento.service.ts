@@ -8,7 +8,7 @@ import { Pessoa } from '../pessoa/pessoa';
 @Injectable()
 export class PagamentoService {
 
-    private _url: string = "http://localhost:8080/carteiravirtual/resources/pagamento/";
+    private _url: string = "http://localhost:8081/carteiravirtual/resources/pagamento/";
     private _headers: Headers;
 
     constructor(

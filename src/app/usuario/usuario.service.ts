@@ -13,7 +13,7 @@ import { Pessoa } from '../pessoa/pessoa';
 export class UsuarioService {
 
   public usuario: Usuario;
-  private _url: string = "http://localhost:8080/carteiravirtual/resources/usuario/";
+  private _url: string = "http://localhost:8081/carteiravirtual/resources/usuario/";
   private _http: Http;
   private _headers: Headers;
 

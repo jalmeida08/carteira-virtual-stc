@@ -5,6 +5,6 @@ export class Pagamento {
     public fixo: boolean;
     public valor: string;
     public statusPagamento: string = undefined;
-    public pessoa: Pessoa;
+    public pessoa: Pessoa = new Pessoa();
     public descricao: string;
 }
