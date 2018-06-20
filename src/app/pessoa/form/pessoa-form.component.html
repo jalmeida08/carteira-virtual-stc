@@ -1,3 +1,8 @@
+<div *ngIf="mensagens">
+    <app-alerta [mensagens]="mensagens"></app-alerta>
+</div>
+
+
 <form (submit)="requisicaoPessoa()" method="POST">
     <div class="form-group">
         <label for="nome">Nome:</label>

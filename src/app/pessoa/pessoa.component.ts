@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PessoaService } from './pessoa.service';
 import { Pessoa } from './pessoa';
 import { NgbModal, ModalDismissReasons } from "@ng-bootstrap/ng-bootstrap";
-import { Mensagem } from '../usuario/mensagem';
+import { Mensagem } from '../alerta/mensagem';
 
 @Component({
   selector: 'app-pessoa',
@@ -13,15 +13,10 @@ export class PessoaComponent implements OnInit {
   private _pessoaService: PessoaService;
   public pessoa: Pessoa = new Pessoa();
   public pessoas: Pessoa[];
-  public mensagens: Mensagem[] = new Array<Mensagem>();
+  public mensagens: Array<Mensagem> = new Array<Mensagem>();
 
   constructor(pessoaService: PessoaService) {
     this._pessoaService = pessoaService;
-  }
-
-  public closeAlert(alert: Mensagem) {
-    const index: number = this.mensagens.indexOf(alert);
-    this.mensagens.splice(index, 1);
   }
 
   public remover(pessoa: Pessoa): void {
@@ -33,17 +28,21 @@ export class PessoaComponent implements OnInit {
           let indice = novaLista.indexOf(pessoa);
           novaLista.splice(indice, 1);
           this.pessoas = novaLista;
-          this.mensagens.push({
-            mensagem: "Excluido com sucesso",
-            mensagemDesaque: "Sucesso!",
-            tipoMensagem: "success"
-          });
-        }, erro => {
-          this.mensagens.push({
-            mensagem: "Erro ao excluir",
-            mensagemDesaque: "Erro!",
-            tipoMensagem: "danger"
-          });
+          this.mensagens.push(
+            {
+              mensagem: "Excluído com sucesso",
+              tipoMensagem: "success",
+              mensagemDesaque: "Sucesso! "
+            }
+          );
+        }, error => {
+          this.mensagens.push(
+            {
+              mensagem: "Erro ao excluir",
+              tipoMensagem: "danger",
+              mensagemDesaque: "Erro! "
+            }
+          );
         });
     }
   }

@@ -6,6 +6,7 @@ import { PessoaFormComponent } from './pessoa/form/pessoa-form.component';
 import { UsuarioCadastroComponent } from './usuario/form/usuario-cadastro.component';
 import { PagamentoComponent } from './pagamento/pagamento.component';
 import { PagamentoCadastroComponent } from './pagamento/cadastro/pagamento-cadastro.component';
+import { ParcelaComponent } from './parcela/parcela.component';
 
 const appRoutes: Routes = [
     { path: 'pessoa', component: PessoaComponent },
@@ -17,6 +18,7 @@ const appRoutes: Routes = [
     { path: 'pagamento', component: PagamentoComponent },
     { path: 'pagamento/cadastrar', component: PagamentoCadastroComponent },
     { path: 'pagamento/form/:id', component: PagamentoCadastroComponent },
+    { path: 'parcela', component: ParcelaComponent },
     { path: '**', redirectTo: 'pessoa' }
 ];
 

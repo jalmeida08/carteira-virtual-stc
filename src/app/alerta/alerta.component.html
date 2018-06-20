@@ -1,0 +1,4 @@
+<p *ngFor="let mensagem of mensagens"> 
+    <ngb-alert class="text-center" [type]="mensagem.tipoMensagem" (close)="closeAlert(mensagem)">
+        <b> {{mensagem.mensagemDesaque }} </b> {{mensagem.mensagem}}</ngb-alert>
+</p>

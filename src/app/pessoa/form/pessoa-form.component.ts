@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PessoaService } from '../pessoa.service';
 import { Pessoa } from '../pessoa';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Mensagem } from '../../alerta/mensagem';
 
 @Component({
     selector: 'app-pessoa-form',
@@ -11,6 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class PessoaFormComponent implements OnInit {
 
     public pessoa: Pessoa = new Pessoa();
+    public mensagens: Array<Mensagem> = new Array<Mensagem>();
 
     constructor(
         private _pessoaService: PessoaService,
@@ -34,10 +36,22 @@ export class PessoaFormComponent implements OnInit {
         this._pessoaService
             .salvar(this.pessoa)
             .subscribe(res => {
-                console.log(res),
-                    this.pessoa = new Pessoa();
-            }, erro => {
-                console.log("erro ", erro);
+                this.mensagens.push(
+                    {
+                        mensagem: "Salvo com sucesso",
+                        tipoMensagem: "success",
+                        mensagemDesaque: "Sucesso! "
+                    }
+                );
+                this.pessoa = new Pessoa();
+            }, error => {
+                this.mensagens.push(
+                    {
+                        mensagem: "Erro ao salvar "+error,
+                        tipoMensagem: "danger",
+                        mensagemDesaque: "Erro! "
+                    }
+                );
             });
     };
 

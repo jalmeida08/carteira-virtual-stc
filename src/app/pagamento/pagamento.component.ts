@@ -6,6 +6,7 @@ import { DatePipe } from '@angular/common';
 import { PessoaService } from '../pessoa/pessoa.service';
 import { count } from 'rxjs/operators';
 import { Pessoa } from '../pessoa/pessoa';
+import { Mensagem } from '../alerta/mensagem';
 
 @Component({
     selector: 'app-pagamento',
@@ -15,6 +16,7 @@ import { Pessoa } from '../pessoa/pessoa';
 export class PagamentoComponent implements OnInit {
     public pagamento: Pagamento = new Pagamento();
     public pagamentos: Pagamento[] = new Array<Pagamento>();
+    public mensagens: Mensagem[] = new Array<Mensagem>();
 
     constructor(
         private _pagamentoService: PagamentoService,
@@ -26,30 +28,39 @@ export class PagamentoComponent implements OnInit {
         this._pessoaService = _pessoaService;
     }
 
+    public alerta(
+        mensagem: string,
+        tipoMensagem: string,
+        mensagemDesaque: string) {
+        this.mensagens.push(
+            {
+                mensagem: mensagem,
+                tipoMensagem: tipoMensagem,
+                mensagemDesaque: mensagemDesaque
+            }
+        );
+    }
+
     public listarPagamentos(): void {
         let cont: number = 0;
         this._pagamentoService
             .listarPagamentos()
             .subscribe(res => {
                 this.pagamentos = res;
-                console.log(res);
                 this.capturarPessoa(res, cont);
             }, error => {
-                console.log("erro ", error);
+                this.alerta("Erro " + error, "danger", "Erro! ");
             })
     }
 
     public capturarPessoa(pagamentos: Array<Pagamento>, cont: number) {
         if (cont < pagamentos.length) {
             if (pagamentos[cont].pessoa.nome === undefined) {
-                console.log(pagamentos[cont]);
-                //cont++;
-                //this.capturarPessoa(pagamentos, cont);
                 this._pessoaService
-                .getPessoa(parseInt(pagamentos[cont].pessoa.toString(), 32))
-                .subscribe(res => {
-                        let pessoa : Pessoa = res;
-                        this.pagamentos[cont-1].pessoa = pessoa;
+                    .getPessoa(parseInt(pagamentos[cont].pessoa.toString(), 32))
+                    .subscribe(res => {
+                        let pessoa: Pessoa = res;
+                        this.pagamentos[cont - 1].pessoa = pessoa;
                         cont++;
                         this.capturarPessoa(pagamentos, cont);
                     }, error => {
@@ -71,8 +82,9 @@ export class PagamentoComponent implements OnInit {
                     let indice = novaLista.indexOf(pagamento);
                     novaLista.splice(indice, 1);
                     this.pagamentos = novaLista;
+                    this.alerta("Excluido com sucesso", "success", "Sucesso! ");
                 }, error => {
-                    console.log("erro ", error);
+                    this.alerta("Erro ao excluir", "danger", "Erro! ");
                 });
         }
     }
@@ -84,6 +96,5 @@ export class PagamentoComponent implements OnInit {
 
     ngOnInit(): void {
         this.listarPagamentos();
-        console.log(this.pagamentos)
     }
 }

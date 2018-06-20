@@ -7,6 +7,8 @@ import { routing } from '../app.routes';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserModule } from '@angular/platform-browser';
+import { AlertaModule } from '../alerta/alerta.module';
+import { ParcelaModule } from '../parcela/parcela.module';
 
 @NgModule({
     declarations: [
@@ -18,7 +20,10 @@ import { BrowserModule } from '@angular/platform-browser';
         CommonModule,
         NgbModule.forRoot(),
         FormsModule,
-        routing],
+        routing,
+        AlertaModule,
+        ParcelaModule
+    ],
     exports: [],
     providers: [PagamentoService],
 })

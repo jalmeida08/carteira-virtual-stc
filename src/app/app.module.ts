@@ -8,6 +8,9 @@ import { PessoaModule } from './pessoa/pessoa.module';
 import { UsuarioModule } from './usuario/usuario.module';
 import { DespesaModule } from "./despesa/despesa.module"
 import { PagamentoModule } from './pagamento/pagamento.module';
+import { ParcelaModule } from './parcela/parcela.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AlertaModule } from './alerta/alerta.module';
 
 
 @NgModule({
@@ -16,12 +19,15 @@ import { PagamentoModule } from './pagamento/pagamento.module';
   ],
   imports: [
     BrowserModule,
+    NgbModule.forRoot(),
     routing,
     HttpModule,
     PessoaModule,
     UsuarioModule,
     DespesaModule,
-    PagamentoModule
+    PagamentoModule,
+    ParcelaModule,
+    AlertaModule
   ],
   providers: [],
   bootstrap: [AppComponent],

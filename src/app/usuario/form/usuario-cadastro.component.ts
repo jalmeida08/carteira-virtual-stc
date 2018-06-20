@@ -3,9 +3,9 @@ import { PessoaService } from '../../pessoa/pessoa.service';
 import { UsuarioService } from '../usuario.service';
 import { Pessoa } from '../../pessoa/pessoa';
 import { Usuario } from '../usuario';
-import { Mensagem } from '../mensagem';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PARAMETERS } from '@angular/core/src/util/decorators';
+import { Mensagem } from '../../alerta/mensagem';
 
 @Component({
     selector: 'app-usuario-cadastro',
@@ -35,6 +35,19 @@ export class UsuarioCadastroComponent implements OnInit {
         this.checarParamentro();
     }
 
+    public alerta(
+        mensagem: string,
+        tipoMensagem: string,
+        mensagemDesaque: string) {
+        this.mensagens.push(
+            {
+                mensagem: mensagem,
+                tipoMensagem: tipoMensagem,
+                mensagemDesaque: mensagemDesaque
+            }
+        );
+    }
+
     public checarParamentro() {
         let idUsuario: number;
         this._activatedRoute
@@ -51,23 +64,13 @@ export class UsuarioCadastroComponent implements OnInit {
         this.salvarPessoa();
     }
 
-    public closeAlert(alert: Mensagem) {
-        const index: number = this.mensagens.indexOf(alert);
-        this.mensagens.splice(index, 1);
-    }
-
     private salvarPessoa() {
-        console.log("salvando pessoa");
         this._pessoaService
             .salvar(this.pessoa)
             .subscribe(res => {
                 this.buscarPessoaNomeDtNascimento();
             }, error => {
-                this.mensagens.push({
-                    mensagem: "Erro ao salvar pessoa " + error,
-                    mensagemDesaque: "Erro!",
-                    tipoMensagem: "danger"
-                });
+                this.alerta("Erro ao salvar", "danger", "Erro! ");
             });
     }
 
@@ -79,11 +82,7 @@ export class UsuarioCadastroComponent implements OnInit {
                 this.pessoa = res;
                 this.salvarUsuario(this.pessoa);
             }, error => {
-                this.mensagens.push({
-                    mensagem: "Erro ao salvar pessoa " + error,
-                    mensagemDesaque: "Erro!",
-                    tipoMensagem: "danger"
-                });
+                this.alerta("Erro " + error, "danger", "Erro! ");
             });
     }
 
@@ -92,20 +91,12 @@ export class UsuarioCadastroComponent implements OnInit {
         this._usuarioService
             .salvar(this.usuario)
             .subscribe(res => {
-                this.mensagens.push({
-                    mensagem: "Usuário salvo com sucesso",
-                    mensagemDesaque: "Sucesso!",
-                    tipoMensagem: "success"
-                });
                 this.pessoa = new Pessoa();
                 this.usuario = new Usuario();
                 this.confirmarSenha = undefined;
+                this.alerta("Salvo com sucesso", "success", "Sucesso! ");                
             }, error => {
-                this.mensagens.push({
-                    mensagem: "Erro ao salvar usuário " + error,
-                    mensagemDesaque: "Erro!",
-                    tipoMensagem: "danger"
-                });
+                this.alerta("Erro ao salvar", "danger", "Erro! ");
             });
     }
 
@@ -125,7 +116,7 @@ export class UsuarioCadastroComponent implements OnInit {
                 this.usuario.idUsuario = res.idUsuario;
                 this.pessoa = res.pessoa;
             }, error => {
-                console.log("erro ao carregar usuario");
+                this.alerta("Erro " + error, "danger", "Erro! ");
             });
     }
 }

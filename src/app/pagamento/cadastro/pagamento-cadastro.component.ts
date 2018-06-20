@@ -6,6 +6,8 @@ import { Pagamento } from '../pagamento';
 import * as moment from 'moment/moment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { Mensagem } from '../../alerta/mensagem';
+import { Parcela } from '../../parcela/parcela';
 
 @Component({
     selector: 'app-pagamento-cadastro',
@@ -16,14 +18,17 @@ export class PagamentoCadastroComponent implements OnInit {
 
     public pessoas: Pessoa[] = new Array<Pessoa>();
     public pagamento: Pagamento = new Pagamento();
-    public dataPagamento : string;
+    public dataPagamento: string;
+    public pagamentoParcelado: boolean = false;
+    public mensagens: Mensagem[] = new Array<Mensagem>();
+    public parcela : Parcela = new Parcela();
 
     constructor(
         private _pessoaService: PessoaService,
         private _pagamentoService: PagamentoService,
         private _activatedRoute: ActivatedRoute,
         private _router: Router,
-        private _datePipe : DatePipe,
+        private _datePipe: DatePipe,
     ) {
         this._pagamentoService = _pagamentoService;
         this._pessoaService = _pessoaService;
@@ -32,16 +37,30 @@ export class PagamentoCadastroComponent implements OnInit {
         this._datePipe = _datePipe
     }
 
+    public alerta(
+        mensagem: string,
+        tipoMensagem: string,
+        mensagemDesaque: string) {
+        this.mensagens.push(
+            {
+                mensagem: mensagem,
+                tipoMensagem: tipoMensagem,
+                mensagemDesaque: mensagemDesaque
+            }
+        );
+    }
+
     public salvar() {
-        this.pagamento.dataPagamento = new Date(this.dataPagamento+' 00:00:00');
+        this.pagamento.dataPagamento = new Date(this.dataPagamento + ' 00:00:00');
         console.log(this.pagamento.pessoa);
         this._pessoaService
             .getPessoa(parseInt(this.pagamento.pessoa.idPessoa.toString(), 32))
             .subscribe(res => {
                 this.pagamento.pessoa = res;
                 this.salvarPagamento();
-            }, erro => {
-                console.log("erro ao salvar");
+            }, error => {
+                this.alerta("Erro ao Salvar", "danger", "Erro! ");
+
             });
     }
 
@@ -49,10 +68,10 @@ export class PagamentoCadastroComponent implements OnInit {
         this._pagamentoService
             .salvar(this.pagamento)
             .subscribe(res => {
-                console.log("salvou ", res);
+                this.alerta("Salvo com sucesso", "success", "Sucesso! ");                
                 this.pagamento = new Pagamento();
             }, error => {
-                console.log("error ", error);
+                this.alerta("Erro ao salvar", "danger", "Erro! ");
             });
     }
 
@@ -66,8 +85,8 @@ export class PagamentoCadastroComponent implements OnInit {
             .subscribe(res => {
                 this.pessoas = res
             }, error => {
-                console.log("erro no listar ", error);
-            })
+                this.alerta("Erro "+error, "danger", "Erro! ");
+            });
     }
 
     public buscarPagamento(idPagamento: number): void {
@@ -77,15 +96,15 @@ export class PagamentoCadastroComponent implements OnInit {
                 this.pagamento = res;
                 this.dataPagamento = this._datePipe.transform(res.dataPagamento, 'yyyy-MM-dd');
             }, error => {
-                console.log("erro ", error);
+                this.alerta("Erro "+error, "danger", "Erro! ");
             })
     }
 
     public checarParametro(): void {
         let idPagamento: number;
         this._activatedRoute.params.subscribe(params => {
-                idPagamento = params["id"];
-            });
+            idPagamento = params["id"];
+        });
         if (idPagamento) {
             this.buscarPagamento(idPagamento);
         }

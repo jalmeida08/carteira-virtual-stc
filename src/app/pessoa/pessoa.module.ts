@@ -8,18 +8,20 @@ import { PessoaComponent } from "./pessoa.component"
 import { PessoaService } from "./pessoa.service"
 import { PessoaFormComponent } from './form/pessoa-form.component';
 import { routing } from './../app.routes';
+import { AlertaModule } from '../alerta/alerta.module';
 
 @NgModule({
     declarations: [
         PessoaFormComponent,
-        PessoaComponent
+        PessoaComponent,
     ],
     imports: [
         BrowserModule,
         CommonModule,
         NgbModule.forRoot(),
         FormsModule,
-        routing
+        routing,
+        AlertaModule
     ],
     exports: [],
     providers: [PessoaService]

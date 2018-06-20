@@ -1,3 +1,7 @@
+<div *ngIf="mensagens">
+    <app-alerta [mensagens]="mensagens"></app-alerta>
+</div>
+
 <table class="table table-hover">
     <thead>
         <tr>
@@ -48,26 +52,34 @@
     <div class="modal-body">
         <ul>
             <div class="modalIdPagamento">
-                <li><b>Nº: </b>{{pagamento.idPagamento}}</li>
+                <li>
+                    <b>Nº: </b>{{pagamento.idPagamento}}</li>
             </div>
             <div class="modalDtPagamento">
-                <li><b>Data do Pagamento: </b>{{pagamento.dataPagamento| date:'dd/MM/yyyy'}}</li>
+                <li>
+                    <b>Data do Pagamento: </b>{{pagamento.dataPagamento| date:'dd/MM/yyyy'}}</li>
             </div>
             <div class="modalPessoa">
-                <li><b>Nome Devedor: </b>{{pagamento.pessoa.nome}}</li>
+                <li>
+                    <b>Nome Devedor: </b>{{pagamento.pessoa.nome}}</li>
             </div>
             <div class="modalFixo">
-                <li *ngIf="pagamento.fixo"><b>Pagamento Fixo: </b>Sim</li>
-                <li *ngIf="!pagamento.fixo"><b>Pagamento Fixo: </b>Não</li>
+                <li *ngIf="pagamento.fixo">
+                    <b>Pagamento Fixo: </b>Sim</li>
+                <li *ngIf="!pagamento.fixo">
+                    <b>Pagamento Fixo: </b>Não</li>
             </div>
             <div class="modalValor">
-                <li><b>Valor: </b>{{pagamento.valor}}</li>
+                <li>
+                    <b>Valor: </b>{{pagamento.valor}}</li>
             </div>
             <div class="modalStatus">
-                <li><b>Status: </b>{{pagamento.status}}</li>
+                <li>
+                    <b>Status: </b>{{pagamento.statusPagamento}}</li>
             </div>
             <div class="modalDescricao">
-                <li><b>Descrição: </b>{{pagamento.descricao}}</li>
+                <li>
+                    <b>Descrição: </b>{{pagamento.descricao}}</li>
             </div>
         </ul>
     </div>

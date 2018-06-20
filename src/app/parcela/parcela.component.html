@@ -1,0 +1,18 @@
+<div class="col-md-12" style="margin-left: 0px">
+    <div class="form-check col-md-12">
+        <input type="checkbox" class="form-check-input" name="pagamentoParcelado" id="pagamentoParcelado" [(ngModel)]="pagamentoParcelado">
+        <label class="form-check-label" for="pagamentoParcelado">Pagamento parcelado?</label>
+    </div>
+</div>
+<div *ngIf="pagamentoParcelado">
+    <div class="col-md-12 row">
+        <div class="form-group col-md-6">
+            <label class="col-form-label" for="qtdParcela">Quantidade de parcelas</label>
+            <input class="form-control" type="text" id="qtdParcela" (change)="calcularValorParcela(pagamento.valor)" name="qtdParcela" [(ngModel)]="qtdParcela">
+        </div>
+        <div class="form-group col-md-6">
+            <label class="col-form-label" for="valor">Valor da parcela</label>
+            <input class="form-control" type="text" id="valor" name="valor" [(ngModel)]="parcela.valorParcela">
+        </div>
+    </div>
+</div>

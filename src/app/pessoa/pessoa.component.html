@@ -1,7 +1,6 @@
-<p *ngFor="let mensagem of mensagens">
-  <ngb-alert [type]="mensagem.tipoMensagem" (close)="closeAlert(mensagem)">
-    <b>{{ mensagem.mensagemDesaque }} </b> {{mensagem.mensagem}}</ngb-alert>
-</p>
+<div *ngIf="mensagens">
+  <app-alerta [mensagens]="mensagens"></app-alerta>
+</div>
 
 <table class="table table-hover">
   <thead>

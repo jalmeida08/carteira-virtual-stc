@@ -1,3 +1,7 @@
+<div *ngIf="mensagens">
+    <app-alerta [mensagens]="mensagens"></app-alerta>
+</div>
+
 <div class="col-md-12">
     <form method="POST" (submit)="salvar()">
         <div class="col-md-12 row">
@@ -10,8 +14,8 @@
                 <input class="form-control" type="date" id="dataPagamento" name="dataPagamento" [(ngModel)]="dataPagamento">
             </div>
         </div>
-        <div class="col-md-12 row">
-            <div class="form-check col-md-12" style="margin-left: 15px">
+        <div class="col-md-12 row" style="margin-left: 0px">
+            <div class="form-check col-md-12">
                 <input type="checkbox" class="form-check-input" name="fixo" id="fixo" (click)="pagamentoFixo()" [(ngModel)]="pagamento.fixo">
                 <label class="form-check-label" for="fixo">Pagamento fixo?</label>
             </div>
@@ -37,11 +41,16 @@
                 </div>
             </div>
         </div>
+        <div>
+            <app-parcela [(pagamentoParcelado)]="pagamentoParcelado" [(parcela)]="parcela" [pagamento]="pagamento"></app-parcela>
+        </div>
         <div class="col-md-12 row">
-            <div class="form-group col-md-12">
-                <label class="col-form-label" for="descricao">Descrição</label>
-                <textarea class="form-control" id="descricao" placeholder="Ex.: Salário da empresa *****, encontrar ciclano em tal ponto para o pagamento, pagamento proveniente de venda de um veículo..."
-                    [(ngModel)]="pagamento.descricao" name="descricao" id="descricao" maxlength="250" rows="3"></textarea>
+            <div class="col-md-12 row ">
+                <div class="form-group col-md-12">
+                    <label class="col-form-label" for="descricao">Descrição</label>
+                    <textarea class="form-control" id="descricao" placeholder="Ex.: Salário da empresa *****, encontrar ciclano em tal ponto para o pagamento, pagamento proveniente de venda de um veículo..."
+                        [(ngModel)]="pagamento.descricao" name="descricao" id="descricao" maxlength="250" rows="3"></textarea>
+                </div>
             </div>
         </div>
         <button class="btn btn-primary" type="submit">Salvar</button>
