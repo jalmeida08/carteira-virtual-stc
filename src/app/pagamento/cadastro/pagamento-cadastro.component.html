@@ -24,7 +24,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="col-form-label" for="statusPagamento">Status do pagamento</label>
-                    <select [disabled]="pagamento.fixo" id="statusPagamento" name="statusPagamento" [(ngModel)]="pagamento.statusPagamento" class="form-control">
+                    <select id="statusPagamento" name="statusPagamento" [(ngModel)]="pagamento.statusPagamento" class="form-control">
                         <option selected value="undefined">Selecione</option>
                         <option value="ARECEBER">A receber</option>
                         <option value="RECEBIDO">Recebido</option>
@@ -41,9 +41,9 @@
                 </div>
             </div>
         </div>
-        <div>
+       <!--  <div>
             <app-parcela [(pagamentoParcelado)]="pagamentoParcelado" [(parcela)]="parcela" [pagamento]="pagamento"></app-parcela>
-        </div>
+        </div> -->
         <div class="col-md-12 row">
             <div class="col-md-12 row ">
                 <div class="form-group col-md-12">

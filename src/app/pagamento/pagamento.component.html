@@ -22,7 +22,7 @@
             <td *ngIf="pagamento.fixo">Fixo</td>
             <td *ngIf="!pagamento.fixo">Não Fixo</td>
             <td>{{pagamento.valor}}</td>
-            <td>{{pagamento.statusPagamento}}</td>
+            <td>{{pagamento.statusPagamento === 'ARECEBER'?'A receber' : 'Recebido' }}</td>
             <td>{{pagamento.pessoa.nome}}</td>
             <td>{{pagamento.descricao}}</td>
             <td>
@@ -75,7 +75,7 @@
             </div>
             <div class="modalStatus">
                 <li>
-                    <b>Status: </b>{{pagamento.statusPagamento}}</li>
+                    <b>Status: </b>{{pagamento.statusPagamento === 'ARECEBER'?'A receber' : 'Recebido' }}</li>
             </div>
             <div class="modalDescricao">
                 <li>
@@ -84,6 +84,7 @@
         </ul>
     </div>
     <div class="modal-footer">
+        <button type="button" [hidden]="pagamento.statusPagamento === 'RECEBIDO'" (click)="fecharPagamento(pagamento.idPagamento); c('Close click')" class="btn btn-primary">Fechar Pagamento</button>
         <button type="button" class="btn btn-light" (click)="c('Close click')">Close</button>
     </div>
 </ng-template>

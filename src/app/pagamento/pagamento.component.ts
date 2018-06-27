@@ -94,6 +94,22 @@ export class PagamentoComponent implements OnInit {
         this._modalService.open(content, { size: 'lg' });
     }
 
+    public fecharPagamento(idPagamento: number) {
+        if(confirm("Deseja realmente dar o pagamento como recebido?")){
+            this._pagamentoService
+            .fecharPagamento(idPagamento)
+            .subscribe(res => {
+                this.alerta("Pagamento recebido com sucesso", "success", "Sucesso! ");
+                this.listarPagamentos();
+            }, error => {
+                this.alerta(
+                    "Erro ao fechar o pagamento, verifique se o pagamento já está com o status de 'RECEBIDO'",
+                    "danger",
+                    "Erro! "
+                );
+            })
+        }
+    }
     ngOnInit(): void {
         this.listarPagamentos();
     }

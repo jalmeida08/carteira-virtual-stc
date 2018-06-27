@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { PessoaService } from '../../pessoa/pessoa.service';
 import { PagamentoService } from '../pagamento.service';
 import { Pessoa } from '../../pessoa/pessoa';
@@ -21,7 +21,8 @@ export class PagamentoCadastroComponent implements OnInit {
     public dataPagamento: string;
     public pagamentoParcelado: boolean = false;
     public mensagens: Mensagem[] = new Array<Mensagem>();
-    public parcela : Parcela = new Parcela();
+    public parcela: Parcela = new Parcela();
+    @Output() calcularParcela = new EventEmitter();
 
     constructor(
         private _pessoaService: PessoaService,
@@ -52,12 +53,15 @@ export class PagamentoCadastroComponent implements OnInit {
 
     public salvar() {
         this.pagamento.dataPagamento = new Date(this.dataPagamento + ' 00:00:00');
-        console.log(this.pagamento.pessoa);
         this._pessoaService
             .getPessoa(parseInt(this.pagamento.pessoa.idPessoa.toString(), 32))
             .subscribe(res => {
                 this.pagamento.pessoa = res;
-                this.salvarPagamento();
+                if (!this.pagamento.idPagamento) {
+                    this.salvarPagamento();
+                } else {
+                    this.atualizar();
+                }
             }, error => {
                 this.alerta("Erro ao Salvar", "danger", "Erro! ");
 
@@ -68,16 +72,34 @@ export class PagamentoCadastroComponent implements OnInit {
         this._pagamentoService
             .salvar(this.pagamento)
             .subscribe(res => {
-                this.alerta("Salvo com sucesso", "success", "Sucesso! ");                
+                this.alerta("Salvo com sucesso", "success", "Sucesso! ");
                 this.pagamento = new Pagamento();
             }, error => {
                 this.alerta("Erro ao salvar", "danger", "Erro! ");
             });
     }
 
-    public pagamentoFixo(): void {
-        this.pagamento.statusPagamento = undefined;
+    public atualizar() {
+        this._pagamentoService
+            .atualizar(this.pagamento)
+            .subscribe(res => {
+                this.alerta("Atualizado com sucesso", "success", "Sucesso! ");
+                this.pagamento = new Pagamento();
+            }, error => {
+                this.alerta("Erro ao atualizar", "danger", "Erro! ");
+            })
+
     }
+
+    /*     public pagamentoFixo(): void {
+            let dataAtual : Date = new Date();
+            if(this.dataPagamento > this._datePipe.transform(dataAtual, 'yyyy-MM-dd')){
+                this.pagamento.statusPagamento = 'ARECEBER';
+            }else{
+                this.pagamento.statusPagamento = 'RECEBIDO';
+            }
+            //this.pagamento.statusPagamento = undefined;
+        } */
 
     public listarPessoas() {
         this._pessoaService
@@ -85,7 +107,7 @@ export class PagamentoCadastroComponent implements OnInit {
             .subscribe(res => {
                 this.pessoas = res
             }, error => {
-                this.alerta("Erro "+error, "danger", "Erro! ");
+                this.alerta("Erro " + error, "danger", "Erro! ");
             });
     }
 
@@ -96,7 +118,7 @@ export class PagamentoCadastroComponent implements OnInit {
                 this.pagamento = res;
                 this.dataPagamento = this._datePipe.transform(res.dataPagamento, 'yyyy-MM-dd');
             }, error => {
-                this.alerta("Erro "+error, "danger", "Erro! ");
+                this.alerta("Erro " + error, "danger", "Erro! ");
             })
     }
 
@@ -109,6 +131,8 @@ export class PagamentoCadastroComponent implements OnInit {
             this.buscarPagamento(idPagamento);
         }
     }
+
+    
 
     ngOnInit(): void {
         this.checarParametro();

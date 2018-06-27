@@ -43,9 +43,25 @@ export class PagamentoService {
             );
     }
 
+    public atualizar(pagamento: Pagamento): Observable<Response> {
+        return this._http
+            .put(this._url,
+                pagamento,
+                { headers: this._headers }
+            );
+    }
+
     public remover(idPagamento: number): Observable<Response> {
         return this._http
             .delete(this._url + idPagamento);
+    }
+
+    public fecharPagamento(id: number): Observable<Response> {
+        return this._http
+            .put(
+                this._url + "fecharPagamento/" + id,
+                { headers: this._headers }
+            );
     }
 
 }
