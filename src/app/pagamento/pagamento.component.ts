@@ -17,6 +17,7 @@ export class PagamentoComponent implements OnInit {
     public pagamento: Pagamento = new Pagamento();
     public pagamentos: Pagamento[] = new Array<Pagamento>();
     public mensagens: Mensagem[] = new Array<Mensagem>();
+    public dataAtual : string = new Date().toString();
 
     constructor(
         private _pagamentoService: PagamentoService,
@@ -26,6 +27,7 @@ export class PagamentoComponent implements OnInit {
     ) {
         this._pagamentoService = _pagamentoService;
         this._pessoaService = _pessoaService;
+        this.dataAtual = this._datePipe.transform(this.dataAtual, "yyyy-MM-dd");
     }
 
     public alerta(

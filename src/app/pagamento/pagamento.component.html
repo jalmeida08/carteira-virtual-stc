@@ -16,7 +16,10 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let pagamento of pagamentos">
+        <tr *ngFor="let pagamento of pagamentos"
+            [ngClass]="{alertaLinha : dataAtual > pagamento.dataPagamento && pagamento.statusPagamento === 'ARECEBER'}"
+            title="{{dataAtual > pagamento.dataPagamento && pagamento.statusPagamento === 'ARECEBER' ? 'Pagamento vencido' : ''}}"
+        >
             <td>{{pagamento.idPagamento}}</td>
             <td>{{pagamento.dataPagamento | date : 'dd/MM/yyyy'}}</td>
             <td *ngIf="pagamento.fixo">Fixo</td>
@@ -31,7 +34,7 @@
                     <div class="btn-group" ngbDropdown role="group" aria-label="Button group with nested dropdown">
                         <button class="btn btn-primary dropdown-toggle-split" ngbDropdownToggle></button>
                         <div class="dropdown-menu" ngbDropdownMenu>
-                            <button class="dropdown-item" (click)="openLg(content, pagamento)">Fechar pagamento</button>
+                            <button [disabled]="pagamento.statusPagamento === 'RECEBIDO'" class="dropdown-item" (click)="openLg(content, pagamento)">Fechar pagamento</button>
                             <button class="dropdown-item" [routerLink]="['/pagamento/form', pagamento.idPagamento]">Editar</button>
                             <button class="dropdown-item" (click)="remover(pagamento)">Remover</button>
                         </div>
