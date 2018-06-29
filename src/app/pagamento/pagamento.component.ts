@@ -7,6 +7,7 @@ import { PessoaService } from '../pessoa/pessoa.service';
 import { count } from 'rxjs/operators';
 import { Pessoa } from '../pessoa/pessoa';
 import { Mensagem } from '../alerta/mensagem';
+import { Alert } from 'selenium-webdriver';
 
 @Component({
     selector: 'app-pagamento',
@@ -98,6 +99,7 @@ export class PagamentoComponent implements OnInit {
 
     public fecharPagamento(idPagamento: number) {
         if(confirm("Deseja realmente dar o pagamento como recebido?")){
+            this.mensagens = new Array<Mensagem>();
             this._pagamentoService
             .fecharPagamento(idPagamento)
             .subscribe(res => {
@@ -112,6 +114,26 @@ export class PagamentoComponent implements OnInit {
             })
         }
     }
+
+    public abrirPagamento(idPagamento : number){
+        if(window.confirm("Deseja realmente abrir o pagamento? ")){
+            this.mensagens = new Array<Mensagem>();
+            this._pagamentoService
+            .abrirPagamento(idPagamento)
+            .subscribe(res =>{
+                this.alerta("Pagamento aberto com sucesso", "success", "Sucesso! ");
+                this.listarPagamentos();
+            }, error => {
+                this.alerta(
+                    "Erro ao abrir o pagamento, verifique se o pagamento já está com o status de 'A RECEBER'",
+                    "danger",
+                    "Erro! "
+                );
+            })
+        }
+        
+    }
+    
     ngOnInit(): void {
         this.listarPagamentos();
     }

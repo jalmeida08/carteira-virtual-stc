@@ -34,7 +34,6 @@
                     <div class="btn-group" ngbDropdown role="group" aria-label="Button group with nested dropdown">
                         <button class="btn btn-primary dropdown-toggle-split" ngbDropdownToggle></button>
                         <div class="dropdown-menu" ngbDropdownMenu>
-                            <button [disabled]="pagamento.statusPagamento === 'RECEBIDO'" class="dropdown-item" (click)="openLg(content, pagamento)">Fechar pagamento</button>
                             <button class="dropdown-item" [routerLink]="['/pagamento/form', pagamento.idPagamento]">Editar</button>
                             <button class="dropdown-item" (click)="remover(pagamento)">Remover</button>
                         </div>
@@ -87,6 +86,7 @@
         </ul>
     </div>
     <div class="modal-footer">
+        <button type="button" [hidden]="pagamento.statusPagamento === 'ARECEBER'" (click)="abrirPagamento(pagamento.idPagamento); c('Close click')" class="btn btn-primary">Abrir Pagamento</button>
         <button type="button" [hidden]="pagamento.statusPagamento === 'RECEBIDO'" (click)="fecharPagamento(pagamento.idPagamento); c('Close click')" class="btn btn-primary">Fechar Pagamento</button>
         <button type="button" class="btn btn-light" (click)="c('Close click')">Close</button>
     </div>

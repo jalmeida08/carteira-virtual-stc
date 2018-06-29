@@ -64,4 +64,12 @@ export class PagamentoService {
             );
     }
 
+    public abrirPagamento(idPagamento : number): Observable<Response>{
+        return this._http
+            .put(
+                this._url+ "abrirPagamento/"+idPagamento,
+                {headers : this._headers}
+            );
+    }
+
 }
