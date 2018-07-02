@@ -1,48 +1,55 @@
 <div *ngIf="mensagens">
     <app-alerta [mensagens]="mensagens"></app-alerta>
 </div>
+<div class="col-xs-12">
+    <div class=" row">
+        <div class="col-md-2 menuPagamento">
+            <nav class="nav flex-column">
+                <a class="nav-link" [routerLink]="['/pagamento/cadastrar']">Cadastrar</a>
+            </nav>
+        </div>
 
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Dt Pagamento</th>
-            <th>Fixo</th>
-            <th>Valor</th>
-            <th>Status</th>
-            <th>Nome devedor</th>
-            <th>Descrição</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let pagamento of pagamentos"
-            [ngClass]="{alertaLinha : dataAtual > pagamento.dataPagamento && pagamento.statusPagamento === 'ARECEBER'}"
-            title="{{dataAtual > pagamento.dataPagamento && pagamento.statusPagamento === 'ARECEBER' ? 'Pagamento vencido' : ''}}"
-        >
-            <td>{{pagamento.idPagamento}}</td>
-            <td>{{pagamento.dataPagamento | date : 'dd/MM/yyyy'}}</td>
-            <td *ngIf="pagamento.fixo">Fixo</td>
-            <td *ngIf="!pagamento.fixo">Não Fixo</td>
-            <td>{{pagamento.valor}}</td>
-            <td>{{pagamento.statusPagamento === 'ARECEBER'?'A receber' : 'Recebido' }}</td>
-            <td>{{pagamento.pessoa.nome}}</td>
-            <td>{{pagamento.descricao}}</td>
-            <td>
-                <div class="btn-group mr-3">
-                    <button type="button" class="btn btn-primary" (click)="openLg(content, pagamento)">Abrir</button>
-                    <div class="btn-group" ngbDropdown role="group" aria-label="Button group with nested dropdown">
-                        <button class="btn btn-primary dropdown-toggle-split" ngbDropdownToggle></button>
-                        <div class="dropdown-menu" ngbDropdownMenu>
-                            <button class="dropdown-item" [routerLink]="['/pagamento/form', pagamento.idPagamento]">Editar</button>
-                            <button class="dropdown-item" (click)="remover(pagamento)">Remover</button>
-                        </div>
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </tbody>
-</table>
+        <div class="col-md-10 meusPagamentos" >
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Dt Pagamento</th>
+                        <th>Fixo</th>
+                        <th>Valor</th>
+                        <th>Status</th>
+                        <th>Nome devedor</th>
+                        <th>Descrição</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let pagamento of pagamentos" [ngClass]="{alertaLinha : dataAtual > pagamento.dataPagamento && pagamento.statusPagamento === 'ARECEBER'}"
+                        title="{{dataAtual > pagamento.dataPagamento && pagamento.statusPagamento === 'ARECEBER' ? 'Pagamento vencido' : ''}}">
+                        <td>{{pagamento.dataPagamento | date : 'dd/MM/yyyy'}}</td>
+                        <td *ngIf="pagamento.fixo">Fixo</td>
+                        <td *ngIf="!pagamento.fixo">Não Fixo</td>
+                        <td>{{pagamento.valor}}</td>
+                        <td>{{pagamento.statusPagamento === 'ARECEBER'?'A receber' : 'Recebido' }}</td>
+                        <td>{{pagamento.pessoa.nome | slice:0:10}}</td>
+                        <td>{{pagamento.descricao | slice:0:15}}</td>
+                        <td>
+                            <div class="btn-group mr-3">
+                                <button type="button" class="btn btn-primary" (click)="openLg(content, pagamento)">Abrir</button>
+                                <div class="btn-group" ngbDropdown role="group" aria-label="Button group with nested dropdown">
+                                    <button class="btn btn-primary dropdown-toggle-split" ngbDropdownToggle></button>
+                                    <div class="dropdown-menu" ngbDropdownMenu>
+                                        <button class="dropdown-item" [routerLink]="['/pagamento/form', pagamento.idPagamento]">Editar</button>
+                                        <button class="dropdown-item" (click)="remover(pagamento)">Remover</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 <ng-template #content let-c="close" let-d="dismiss">
     <div class="modal-header">
@@ -86,8 +93,10 @@
         </ul>
     </div>
     <div class="modal-footer">
-        <button type="button" [hidden]="pagamento.statusPagamento === 'ARECEBER'" (click)="abrirPagamento(pagamento.idPagamento); c('Close click')" class="btn btn-primary">Abrir Pagamento</button>
-        <button type="button" [hidden]="pagamento.statusPagamento === 'RECEBIDO'" (click)="fecharPagamento(pagamento.idPagamento); c('Close click')" class="btn btn-primary">Fechar Pagamento</button>
+        <button type="button" [hidden]="pagamento.statusPagamento === 'ARECEBER'" (click)="abrirPagamento(pagamento.idPagamento); c('Close click')"
+            class="btn btn-primary">Abrir Pagamento</button>
+        <button type="button" [hidden]="pagamento.statusPagamento === 'RECEBIDO'" (click)="fecharPagamento(pagamento.idPagamento); c('Close click')"
+            class="btn btn-primary">Fechar Pagamento</button>
         <button type="button" class="btn btn-light" (click)="c('Close click')">Close</button>
     </div>
 </ng-template>

@@ -72,4 +72,12 @@ export class PagamentoService {
             );
     }
 
+    public pagametosDoMes() : Observable<Pagamento[]>{
+        return this._http
+            .get(this._url + "pagametosDoMes")
+            .pipe(
+                map(res => res.json())
+            );
+    }
+
 }

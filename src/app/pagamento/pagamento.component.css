@@ -8,3 +8,6 @@ ul > div > li {padding-top: 02px; padding-bottom: 02px; margin-left: 05px;}
 .modalPessoa{clear: both}
 .modalDescricao{clear: both}
 .alertaLinha{color: red}
+.menuPagamento {padding-top: 10px}
+.menuPagamento > nav > a {color: rgba(0,0,0, .65)}
+.meusPagamentos {margin-top: 10px}

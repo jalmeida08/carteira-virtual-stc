@@ -131,10 +131,23 @@ export class PagamentoComponent implements OnInit {
                 );
             })
         }
-        
+    }
+
+    public pagamentosDoMes(){
+        this._pagamentoService
+            .pagametosDoMes()
+            .subscribe(res => {
+                this.pagamentos = res
+            }, error => {
+                this.alerta(
+                    "Erro ao abrir o carregar a lista de pagamentos do mês",
+                    "danger",
+                    "Erro! "
+                );
+            })
     }
     
     ngOnInit(): void {
-        this.listarPagamentos();
+        this.pagamentosDoMes();
     }
 }
