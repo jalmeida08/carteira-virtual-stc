@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response } from '@angular/http';
-import { Observable } from 'rxjs';
+import { Observable, pipe } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Despesa } from './despesa';
 
@@ -16,7 +16,7 @@ export class DespesaService {
         this._http = _http;
     }
 
-    public buscarDespesas(): Observable<Despesa>{
+    public listarDespesas(): Observable<Despesa[]> {
         return this._http
             .get(this._url)
             .pipe(
@@ -24,12 +24,12 @@ export class DespesaService {
             );
     }
 
-    public salvar(despesa : Despesa): Observable<Response>{
+    public salvar(despesa: Despesa): Observable<Response> {
         return this._http
             .post(
                 this._url,
                 despesa,
-                {headers : this._headers}
+                { headers: this._headers }
             );
     }
 }
