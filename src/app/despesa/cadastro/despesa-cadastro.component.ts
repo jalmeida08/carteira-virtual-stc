@@ -6,6 +6,8 @@ import { PessoaService } from '../../pessoa/pessoa.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Parcela } from '../../parcela/parcela';
 import { EventEmitter } from 'events';
+import { DatePipe } from '@angular/common';
+import * as moment from 'moment/moment';
 
 @Component({
     selector: 'app-despesaCadastro',
@@ -20,18 +22,25 @@ export class DespesaCadastroComponent implements OnInit {
     public pessoas: Array<Pessoa> = new Array<Pessoa>();
     public pessoaDespesa: Array<Pessoa> = new Array<Pessoa>();
     public maisDevedor: boolean;
-    @Input() public pagamentoParcelado: boolean = false;
+    public pagamentoParcelado: boolean = false;
     public parcela: Parcela = new Parcela();
-    @Output() public parcelas = new EventEmitter(); 
+    public parcelas: Array<Parcela>  = new Array<Parcela>();
+
+    public qtdParcela: number;
+    public foraDos30Dias: boolean = false;
+    public deQuantosEmQuantosDias: number;
+    public dataVencimento: string;
 
     constructor(
         private _despesaService: DespesaService,
         private _pessoaService: PessoaService,
         private chRef: ChangeDetectorRef,
         private _modalService: NgbModal,
+        private _datePipe: DatePipe
     ) {
         this._despesaService = _despesaService;
         this._pessoaService = _pessoaService;
+        this._datePipe = _datePipe;
     }
 
     public openLg(content) {
@@ -49,15 +58,15 @@ export class DespesaCadastroComponent implements OnInit {
                 console.log("P ", p);
             }
         });
-        console.log(this.parcelas);
+        this.despesa.parcela = this.parcelas;
         //console.log(this.despesa.parcela);
-        /* this._despesaService
+        this._despesaService
             .salvar(this.despesa)
             .subscribe(res => {
                 console.log("sucesso ", res);
             }, error => {
                 console.log("error ", error);
-            }); */
+            });
     }
 
     public listarPessoas() {
@@ -84,6 +93,46 @@ export class DespesaCadastroComponent implements OnInit {
         let indice = novaLista.indexOf(pessoa);
         novaLista.splice(indice, 1);
         this.pessoaDespesa = novaLista;
+    }
+
+    ///
+    public calcularValorParcela() {
+        //console.log(this.qtdParcela);
+        //console.log(this.despesa.valor);
+        if (this.qtdParcela > 0 && this.despesa.valor > 0) {
+            this.parcela.valorParcela = (this.despesa.valor / this.qtdParcela);
+        }
+    }
+
+    public calcularParcelas() {
+        this.parcelas = new Array<Parcela>();
+        for (let i: number = 0; i < this.qtdParcela; i++) {
+            let p: Parcela = new Parcela();
+            if(!this.foraDos30Dias){
+                this.calcularDias(p, 30, i);
+            }else{
+                this.calcularDias(p, this.deQuantosEmQuantosDias, i);
+            }
+        }
+    }
+
+    public calcularDias (p: Parcela, dias : number, posicao: number){
+        if (this.parcelas.length > 0) {
+            p.dataVencimento = moment(this.parcelas[posicao-1].dataVencimento).add(dias, 'days').toDate();
+            p.valorParcela = this.parcela.valorParcela;
+            this.parcelas.push(p);
+            this.checarDiasDoMes(p);
+        }else{
+            p.dataVencimento = moment(this.dataVencimento).add(dias, 'days').toDate();
+            p.valorParcela = this.parcela.valorParcela;                
+            this.parcelas.push(p);
+            this.checarDiasDoMes(p);
+        }
+        //console.log(this.parcelas);
+    }
+
+    public checarDiasDoMes(parcela : Parcela){
+        //console.log(new Date(parcela.dataVencimento).getUTCDate());
     }
 
     ngOnInit(): void {

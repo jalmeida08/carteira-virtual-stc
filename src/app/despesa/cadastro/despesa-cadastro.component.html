@@ -2,8 +2,8 @@
     <div class="col-md-12 row" style="margin-top: 20px">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="valor" class="col-form-label">Valor</label>
-                <input type="text" class="form-control" name="valor" id="valor" [(ngModel)]="despesa.valor">
+                <label for="despesavalor" class="col-form-label">Valor</label>
+                <input type="text" class="form-control" name="despesavalor" id="despesavalor" [(ngModel)]="despesa.valor">
             </div>
         </div>
         <div class="col-md-6">
@@ -39,7 +39,60 @@
             </div>
         </div>
     </div>
-    <app-parcela  [parcelas]="parcelas" [(pagamentoParcelado)]="pagamentoParcelado" [(despesa)]="despesa" [(parcela)]="despesa.parcela"></app-parcela>
+    <!--  -->
+    <div class="col-md-12" style="margin-left: 0px">
+        <div class="form-check col-md-12">
+            <input type="checkbox" class="form-check-input" name="pagamentoParcelado" id="pagamentoParcelado" [(ngModel)]="pagamentoParcelado">
+            <label class="form-check-label" for="pagamentoParcelado">Pagamento parcelado?</label>
+        </div>
+    </div>
+    <div *ngIf="pagamentoParcelado">
+        <hr>
+        <div class="col-md-12 row">
+            <div class="form-group col-md-6">
+                <label class="col-form-label" for="qtdParcela">Quantidade de parcelas</label>
+                <input class="form-control" type="text" id="qtdParcela" (keyup)="calcularValorParcela(); calcularParcelas()" name="qtdParcela"
+                    [(ngModel)]="qtdParcela">
+            </div>
+            <div class="form-group col-md-6">
+                <label class="col-form-label" for="valor">Valor da parcela</label>
+                <input class="form-control" type="text" id="valor" name="valor" [(ngModel)]="parcela.valorParcela">
+            </div>
+        </div>
+        <div class="col-md-12 row">
+            <div class="col-md-12" style="margin-left: 0px">
+                <div class="form-check col-md-12">
+                    <input type="checkbox" class="form-check-input" name="foraDos30Dias" id="foraDos30Dias" [(ngModel)]="foraDos30Dias">
+                    <label class="form-check-label" for="foraDos30Dias">Pagamento fora do intervalo de 30 dias</label>
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <label class="col-form-label" for="dataVencimento">Data do vencimento</label>
+                <input class="form-control" type="date" id="dataVencimento" name="dataVencimento" [(ngModel)]="dataVencimento">
+            </div>
+            <div class="form-group col-md-6">
+                <label class="col-form-label" for="deQuantosEmQuantosDias">Pagável de quantos em quantos dias</label>
+                <input class="form-control" type="text" id="deQuantosEmQuantosDias" name="deQuantosEmQuantosDias" [(ngModel)]="deQuantosEmQuantosDias"
+                    [disabled]="!foraDos30Dias">
+            </div>
+        </div>
+        <i class="btn btn-info" (click)="calcularParcelas()">Calcular</i>
+        <hr>
+        <table *ngIf="parcelas">
+            <thead>
+                <tr>
+                    <td>Dt de vencimento</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let parcela of parcelas">
+                    <td>{{parcela.dataVencimento | date : 'dd/MM/yyyy'}}</td>
+                    <td>{{parcela.valorParcela | currency : 'R$ '}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!--  -->
 
     <div class="col-md-12 row">
         <div class="form-group col-md-12">
