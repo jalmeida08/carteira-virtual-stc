@@ -11,5 +11,6 @@ export class Despesa{
 	public fixo: boolean = false;
 	public descricao: string;
 	public pessoa : Pessoa = new Pessoa();
+	public parcelado: boolean = false;
 	public parcela: Array<Parcela> = new Array<Parcela>();
 }

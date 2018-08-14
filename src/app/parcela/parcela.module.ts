@@ -5,6 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { routing } from '../app.routes';
 import { Parcela } from './parcela';
+import { ParcelaService } from './parcela.service';
 
 @NgModule({
     declarations: [ParcelaComponent],
@@ -15,6 +16,6 @@ import { Parcela } from './parcela';
         routing,
     ],
     exports: [ParcelaComponent],
-    providers: [],
+    providers: [ParcelaService],
 })
 export class ParcelaModule { }

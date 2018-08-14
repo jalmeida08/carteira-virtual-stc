@@ -1,2 +1,6 @@
 .incluir-pessoa{}
 .incluir-pessoa:hover{cursor: pointer; color: rgba(0, 0, 0, 0.6)!IMPORTANT}
+.table-cadastrar-despesa{width: 100%}
+ul{ list-style-type: none;}
+li {padding-top: 02px; padding-bottom: 02px;}
+.mouseHoverIcons:hover{cursor: pointer;}

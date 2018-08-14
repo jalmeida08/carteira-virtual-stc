@@ -32,4 +32,13 @@ export class DespesaService {
                 { headers: this._headers }
             );
     }
+
+    public getDespesa(idDespesa: number): Observable<Despesa> {
+        return this._http
+            .get(
+                this._url + idDespesa)
+            .pipe(
+                map(res => res.json())
+            );
+    }
 }
