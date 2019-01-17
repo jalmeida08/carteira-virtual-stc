@@ -22,7 +22,8 @@
             <td>{{despesa.parcelado? 'Sim': 'Não'}}</td>
             <td>{{despesa.statusDespesa === 'APAGAR'? 'A pagar': 'Pago'}}</td>
             <td>{{despesa.fixo? 'Sim': 'Não'}}</td>
-            <td>{{despesa.pessoa.nome | slice:0:10}}</td>
+            <td *ngIf="despesa.pessoa != null">{{ despesa.pessoa.nome | slice:0:10}}</td>
+            <td *ngIf="despesa.financiamentoBancario != null">{{ despesa.financiamentoBancario.bandeira | slice:0:10}}</td>
             <td>{{despesa.descricao | slice:0:15}}</td>
             <td>
                 <div class="btn-group">
@@ -30,8 +31,8 @@
                         Abrir
                     </button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" (click)="openLg(content, despesa)">Abrir</a>
-                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" (click)="modalDetalharDespesa(content, despesa)">Abrir</a>
+                        <a class="dropdown-item" [routerLink]="['/despesa/form', despesa.idDespesa]">Editar</a>
                         <a class="dropdown-item" href="#">Something else here</a>
                         <a class="dropdown-item" href="#">Separated link</a>
                     </div>
@@ -41,14 +42,20 @@
     </tbody>
 </table>
 
+<!-- 
+    ====================================================================================================
+    =                 MODAL QUE LISTA TODAS AS PARCELAS DA DESPESA SELECIONADA                         =
+    ====================================================================================================
+ -->
+
 <ng-template #content let-c="close" let-d="dismiss">
     <div class="modal-header">
-        <h4 class="modal-title text-center">Pagamento</h4>
+        <h4 class="modal-title text-center">Despesa</h4>
         <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" >
         <div class="container">
             <ul>
                 <div class="row">
@@ -63,8 +70,10 @@
                 </div>
                 <div class="row">
                     <div class="col-sm">
-                        <li>
+                        <li *ngIf="despesa.pessoa != null">
                             <b>Devedor: </b>{{despesa.pessoa.nome}}</li>
+                            <li *ngIf="despesa.financiamentoBancario != null">
+                                <b >Devedor: </b>{{ despesa.financiamentoBancario.bandeira }}</li>
                     </div>
                 </div>
                 <div class="row">
@@ -89,44 +98,90 @@
                             <b>Descrição: </b>{{despesa.descricao}}</li>
                     </div>
                 </div>
+                <div class="row" *ngIf="despesa.parcela.length < 1">
+                    <div class="col-sm">
+                        <li>
+                            <div class="row">
+                                <div class="col-sm">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" name="pagarDespesa"  (ngModelChange)="pagarDespesaMes()" id="pagarDespesa" [(ngModel)]="pagarDespesa">
+                                        <label class="form-check-label" for="pagarDespesa">Efetuar pagamento</label>
+                                    </div>
+                                </div>
+                            </div>        
+                        </li>
+                    </div>
+                </div>
+                <div class="container" *ngIf="pagarDespesa && despesa.parcela.length < 1">
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="pagamentoDiaAtual" id="pagamentoDiaAtual" [(ngModel)]="pagamentoDiaAtual" (ngModelChange)="pagarHoje()">
+                                <label class="form-check-label" for="pagamentoDiaAtual">Pagou hoje? </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="form-group">
+                                <label class="col-form-label" for="dataPagamento">Data do pagamento</label>
+                                <input class="form-control" type="date" id="dataPagamento" name="dataPagamento" [(ngModel)]="dataPagamento">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </ul>
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th width="2%">Nº</th>
-                        <th width="15%">Valor da parcela</th>
-                        <th width="15%">Valor pago</th>
-                        <th width="20%">Dt de vencimento</th>
-                        <th width="20%">Dt de pagamento</th>
-                        <th width="2%"></th>
-                        <th width="2%"></th>
-                        <th width="2%"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let parcela of despesa.parcela"> 
-                        <td>{{parcela.numeroParcela}}</td>
-                        <td>{{parcela.valorParcela | currency: 'R$ '}}</td>
-                        <td>{{parcela.valorPago | currency: 'R$ '}}</td>
-                        <td>{{parcela.dataVencimento | date:'dd/MM/yyyy'}}</td>
-                        <td>{{parcela.dataPagamento | date:'dd/MM/yyyy'}}</td>
-                        <td title="Pagar parcela" *ngIf="!parcela.dataPagamento && !parcela.valorPago"><i class="material-icons mouseHoverIcons" (click)="openDetalheParcela(detalheParcela, parcela)">done</i></td>
-                        <td title="detalhar parcela" *ngIf="parcela.dataPagamento && parcela.valorPago"><i class="material-icons mouseHoverIcons" (click)="openDetalheParcela(detalheParcela, parcela)">info</i></td>                        
-                        <td title="Abrir parcela" *ngIf="parcela.dataPagamento && parcela.valorPago" ><i class="material-icons mouseHoverIcons" (click)="abrirPagamentoParcela(parcela)">clear</i></td>
-                        <td *ngIf="!parcela.dataPagamento && !parcela.valorPago" ></td>
-                        <td title="Excluir parcela" ><i class="material-icons mouseHoverIcons">delete</i></td>
-                    </tr>
-                </tbody>
-            </table>
+            <div style="max-height: 300px; overflow:auto; " *ngIf="despesa.parcela.length > 0">
+                <table class="table table-hover" >
+                    <thead>
+                        <tr>
+                            <th width="2%">Nº</th>
+                            <th width="15%">Valor da parcela</th>
+                            <th width="15%">Valor pago</th>
+                            <th width="20%">Dt de vencimento</th>
+                            <th width="20%">Dt de pagamento</th>
+                            <th width="2%"></th>
+                            <th width="2%"></th>
+                            <th width="2%"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let parcela of despesa.parcela"> 
+                            <td>{{parcela.numeroParcela}}</td>
+                            <td>{{parcela.valorParcela | currency: 'R$ '}}</td>
+                            <td>{{parcela.valorPago | currency: 'R$ '}}</td>
+                            <td>{{parcela.dataVencimento | date:'dd/MM/yyyy'}}</td>
+                            <td>{{parcela.dataPagamento | date:'dd/MM/yyyy'}}</td> 
+                            <td title="Pagar parcela" *ngIf="!parcela.dataPagamento && !parcela.valorPago"><i class="material-icons mouseHoverIcons" (click)="modalDetalheParcela(detalheParcela, parcela, 'pagar')">done</i></td>
+                            <td title="detalhar parcela" *ngIf="parcela.dataPagamento && parcela.valorPago"><i class="material-icons mouseHoverIcons" (click)="modalDetalheParcela(detalheParcela, parcela, 'detalhar')">info</i></td>                        
+                            <td title="Abrir parcela" *ngIf="parcela.dataPagamento && parcela.valorPago" ><i class="material-icons mouseHoverIcons" (click)="modalConfirmacao(parcela, confirmacao, 'abrirPagamento')">clear</i></td>
+                            <td *ngIf="!parcela.dataPagamento && !parcela.valorPago" ></td>
+                            <td title="Excluir parcela" ><i class="material-icons mouseHoverIcons">delete</i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-light" (click)="c('Close click')">Close</button>
+        <button
+            type="submit"
+            class="btn btn-primary"
+            *ngIf="pagarDespesa && despesa.parcela.length < 1"
+            (click)="pagarDespesaSelecionada()">
+            Confirmar pagamento
+        </button>
     </div>
 </ng-template>
 
+<!-- 
+    ====================================================================================================
+    =                           MODAL PARA DETALHAR A PARCELA DA DESPESA                               =
+    ====================================================================================================
+ -->
 <ng-template #detalheParcela let-c="close" let-d="dismiss">
-    <form method="POST" (submit)="salvarPagamentoParcela()">
+    <form method="POST" (submit)="salvarPagamentoParcela(content)">
         <div class="modal-header">
             <h4 class="modal-title text-center">Parcela </h4>
             <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
@@ -138,7 +193,8 @@
                 <ul>
                     <div class="row">
                         <div class="col-sm">
-                            <li><b>Pagamento pertencente à</b> {{ despesa.pessoa.nome }}</li>
+                            <li *ngIf="despesa.pessoa != null"><b>Pagamento pertencente à</b> {{ despesa.pessoa.nome }}</li>
+                            <li *ngIf="despesa.financiamentoBancario != null"><b>Pagamento pertencente à</b> {{ despesa.financiamentoBancario.bandeira }}</li>
                         </div>
                     </div>
                     <div class="row">
@@ -184,59 +240,71 @@
                 </ul>
             </div>
             <div class="container" *ngIf="pagarParcela">
-                    <div class="row">
-                        <div class="col-sm">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="pagarValorTotal" id="pagarValorTotal" [(ngModel)]="pagarValorTotal" (ngModelChange)="pagarValorTotalFunction()">
-                                <label class="form-check-label" for="pagarValorTotal">Pagar valor total</label>
-                            </div>
-                        </div>
-                        <div class="col-sm">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" name="pagamentoDiaAtual" id="pagamentoDiaAtual" [(ngModel)]="pagamentoDiaAtual" (ngModelChange)="pagarHoje()">
-                                <label class="form-check-label" for="pagamentoDiaAtual">Pagou hoje? </label>
-                            </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="pagarValorTotal" id="pagarValorTotal" [(ngModel)]="pagarValorTotal" (ngModelChange)="pagarValorTotalFunction()">
+                            <label class="form-check-label" for="pagarValorTotal">Pagar valor total</label>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm">
-                            <div class="form-group">
-                                <label class="col-form-label" for="parcelaValorPago">Data do vencimento</label>
-                                <input class="form-control" type="text" id="parcelaValorPago" name="parcelaValorPago" [(ngModel)]="valorASerPago">
-                            </div>
-                        </div>
-                        <div class="col-sm">
-                            <div class="form-group">
-                                <label class="col-form-label" for="dataPagamento">Data do pagamento</label>
-                                <input class="form-control" type="date" id="dataPagamento" name="dataPagamento" [(ngModel)]="dataPagamento">
-                            </div>
+                    <div class="col-sm">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="pagamentoDiaAtual" id="pagamentoDiaAtual" [(ngModel)]="pagamentoDiaAtual" (ngModelChange)="pagarHoje()">
+                            <label class="form-check-label" for="pagamentoDiaAtual">Pagou hoje? </label>
                         </div>
                     </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <div class="form-group">
+                            <label class="col-form-label" for="parcelaValorPago">Data do vencimento</label>
+                            <input class="form-control" type="text" id="parcelaValorPago" name="parcelaValorPago" [(ngModel)]="valorASerPago">
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="form-group">
+                            <label class="col-form-label" for="dataPagamento">Data do pagamento</label>
+                            <input class="form-control" type="date" id="dataPagamento" name="dataPagamento" [(ngModel)]="dataPagamento">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn btn-light" (click)="c('Close click')">Close</button>
-            <button type="submit" class="btn btn-primary" [disabled]="!pagarParcela" title="{{ !pagarParcela? 'Parcela não foi paga ainda': 'Finalizar pagamento'}}">Confirmar pagamento</button>
+            <button type="button" class="btn btn-light" (click)="modalDetalheParcela(content)">Voltar</button>
+            <button
+                type="submit"
+                class="btn btn-primary"
+                *ngIf="!detalharParcela"
+                [disabled]="!pagarParcela"
+                title="{{ !pagarParcela? 'Parcela não foi paga ainda': 'Finalizar pagamento'}}">
+                Confirmar pagamento
+            </button>
         </div>
     </form>
 </ng-template>
 
+<!-- 
+    ====================================================================================================
+    =                                     MODAL DE CONFIRMAÇÃO                                         =
+    ====================================================================================================
+ -->
 <ng-template #confirmacao let-c="close" let-d="dismiss">
     <div class="modal-header">
-        <h4 class="modal-title text-center">{{mensagemModalConfirmacao}} </h4>
+        <h4 class="modal-title text-center">{{mensagemConfirmacao.titulo}} </h4>
         <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
     <div class="modal-body">
         <div class="container">
-            
+            {{mensagemConfirmacao.texto}}
         </div>
     </div>
 
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary" >Sim</button>
-        <button type="button" class="btn btn-light" (click)="c('Close click')">Não</button>
+        <button type="submit" class="btn btn-light" (click)="abrirPagamentoParcela(content)" >Sim</button>
+        <button type="button" class="btn btn-primary" (click)="modalDetalheParcela(content)">Não</button>
     </div>
 </ng-template>

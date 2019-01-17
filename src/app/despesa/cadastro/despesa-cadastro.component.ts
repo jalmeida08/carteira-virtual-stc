@@ -1,13 +1,13 @@
-import { Component, OnInit, NgZone, ChangeDetectorRef, Input, Output } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { DespesaService } from '../despesa.service';
 import { Despesa } from '../despesa';
 import { Pessoa } from '../../pessoa/pessoa';
 import { PessoaService } from '../../pessoa/pessoa.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Parcela } from '../../parcela/parcela';
-import { EventEmitter } from 'events';
-import { DatePipe } from '@angular/common';
 import * as moment from 'moment/moment';
+import { ActivatedRoute } from '@angular/router';
+import { FinanciamentoBancarioService } from '../../financiamento-bancario/financiamento-bancario.service';
+import { FinanciamentoBancario } from '../../financiamento-bancario/financiamento-bancario';
 
 @Component({
     selector: 'app-despesaCadastro',
@@ -25,41 +25,42 @@ export class DespesaCadastroComponent implements OnInit {
     public pagamentoParcelado: boolean = false;
     public parcela: Parcela = new Parcela();
     public parcelas: Array<Parcela> = new Array<Parcela>();
-
+    public financiamentoBancario:  FinanciamentoBancario = new FinanciamentoBancario();
+    public financiamentosBancarios: Array<FinanciamentoBancario> = new Array<FinanciamentoBancario>();
     public qtdParcela: number;
     public foraDos30Dias: boolean = false;
     public deQuantosEmQuantosDias: number;
     public dataVencimento: string;
+    public pessoaFisicaJuridica:string = 'fisica';
 
     constructor(
         private _despesaService: DespesaService,
         private _pessoaService: PessoaService,
-        private chRef: ChangeDetectorRef,
-        private _modalService: NgbModal,
-        private _datePipe: DatePipe
+        private _activeRoute: ActivatedRoute,
+        private _financiamento_bancario: FinanciamentoBancarioService
     ) {
         this._despesaService = _despesaService;
         this._pessoaService = _pessoaService;
-        this._datePipe = _datePipe;
+        this._activeRoute = _activeRoute;
+        this._financiamento_bancario = _financiamento_bancario;
     }
-
-    /*     public openLg(content) {
-            this._modalService.open(content, { size: 'lg' });
-        }
-    
-        public desabilitarSelectPessoa(valor: boolean) {
-            this.maisDevedor = valor;
-        } */
+ 
+    /* 
+    ====================================================================================================
+    =                                        CHAMADAS AO SERVICE                                       =
+    ====================================================================================================
+    */
 
     public salvar() {
-        this.pessoas.forEach(p => {
-            if (p.idPessoa === parseInt(this.despesa.pessoa.idPessoa.toString(), 32)) {
-                this.despesa.pessoa = p;
-                console.log("P ", p);
-            }
-        });
+        // CHECAR SE A DESPESA É FIXA PARA LIMPAR OS CAMPOS DE PARCELA
+        if(this.despesa.fixo){
+            this.despesaFixaTrue();
+        }
+
+        // RESGATAR PESSOA FISICA OU JURIDICA
+        this.resgatarPessoaFisicaJuridica(this.pessoaFisicaJuridica);
         this.despesa.parcela = this.parcelas;
-        //console.log(this.despesa.parcela);
+
         this._despesaService
             .salvar(this.despesa)
             .subscribe(res => {
@@ -69,6 +70,18 @@ export class DespesaCadastroComponent implements OnInit {
             });
     }
 
+    // BUSCAR UMA DESPESA PELO ID
+    public getDespesa(idDespesa: number){
+        this._despesaService
+            .getDespesa(idDespesa)
+            .subscribe(res => {
+                this.despesa = res;
+            }, error => {
+                window.alert(error);
+            });
+    }
+    
+    // LISTAR TODAS AS PESSOAS 
     public listarPessoas() {
         this._pessoaService
             .listar()
@@ -76,29 +89,95 @@ export class DespesaCadastroComponent implements OnInit {
                 this.pessoas = res;
             }, error => {
                 console.log("ERRO AO BUSCAR PESSOAS");
-            })
+            });
     }
 
-    /*     public adicionarPessoa(event) {
-            this.pessoas.forEach(p => {
-                if (p.idPessoa === parseInt(this.pessoa.idPessoa.toString(), 32)) {
-                    this.pessoaDespesa.push(p);
-                }
+    // BUSCAR LISTA DE CARTOES/CHEQUES/FINANCIAMENTOS CADASTRADOS
+    public listarFinanciamentosBancarios(){
+        this._financiamento_bancario
+            .listarFinanciamentoBancario()
+            .subscribe(res => {
+                this.financiamentosBancarios = res;
+            }, error => {
+                console.log("ERRO AO BUSCAR PESSOAS");
             });
-            event.preventDefault();
-        } */
+
+    }
+    
+    // RESGATAR PARAMAETRO CASO USUÁRIO QUEIRA EDITAR UMA DESPESA
+    public checarParametro() {
+        let idDespesa: number;
+        this._activeRoute
+            .params
+            .subscribe(params => {
+                idDespesa = params["id"];
+            });
+        if (idDespesa) {
+            this._despesaService
+            .getDespesa(idDespesa)
+            .subscribe(res => {
+                this.despesa = res;
+                this.checagemEdicao();
+                this.qtdParcela = res.parcela.length;
+                this.parcelas = res.parcela;
+            }, error => {
+                window.alert(error);
+            });
+        }
+    }
+
+    /* 
+        ====================================================================================================
+        =                                       CHAMADAS SOMENTE DO FRONT                                  =
+        ====================================================================================================
+    */
 
     // LIMPAR DATA DA DESPESA CASO A DESPESA SEJA PARCELADA
     public limparDataVencimento() {
         this.despesa.dataVencimento = undefined;
     }
 
-    /*     public removerPessoaDevedora(pessoa: Pessoa) {
-            let novaLista = this.pessoaDespesa;
-            let indice = novaLista.indexOf(pessoa);
-            novaLista.splice(indice, 1);
-            this.pessoaDespesa = novaLista;
-        } */
+    public resgatarPessoaFisicaJuridica(pessoaFisicaJuridica: string){
+        if(pessoaFisicaJuridica === 'fisica'){
+            // RESGATAR PESSOA PARA SETAR EM DESPESA
+            this.pessoas.forEach(p => {
+                if (p.idPessoa === parseInt(this.despesa.pessoa.idPessoa.toString(), 32)) {
+                    this.despesa.pessoa = p;
+                }
+            });
+        }else if(pessoaFisicaJuridica == 'juridica'){
+            // RESGATAR CARTAO/CHEQUE/FINANCIAMENTO PARA SETAR EM DESPESA
+            this.financiamentosBancarios.forEach(f =>{
+                if(f.idFinanciamentoBancario === parseInt(this.despesa.financiamentoBancario.idFinanciamentoBancario.toString(), 32)){
+                    this.despesa.financiamentoBancario = f;
+                }
+            });
+        }
+    }
+
+    public checagemEdicao(){
+        console.log(this.despesa);
+        if(this.despesa.pessoa == null){
+            this.despesa.pessoa = undefined;
+            this.pessoaFisicaJuridica = 'juridica';
+        }else{
+            this.despesa.financiamentoBancario = undefined;
+            this.pessoaFisicaJuridica = 'fisica';
+        }
+        
+       console.log(this.despesa.parcelado);
+    }
+    
+    // LIMPAR OS CAMPOS DE PARCELAMENTO CASO A DESPESA SEJA FIXA
+    public despesaFixaTrue() {
+        this.despesa.parcelado = false;
+        this.qtdParcela = undefined;
+        this.parcela.valorParcela = undefined;
+        this.foraDos30Dias = false;
+        this.dataVencimento = undefined;
+        this.deQuantosEmQuantosDias = undefined;
+        this.despesa.parcela = undefined;
+    }
 
     ///
     public calcularValorParcela() {
@@ -128,20 +207,22 @@ export class DespesaCadastroComponent implements OnInit {
             p.dataVencimento = moment(this.parcelas[posicao - 1].dataVencimento).add(dias, 'days').toDate();
             p.valorParcela = this.parcela.valorParcela;
             this.parcelas.push(p);
-            //this.checarDiasDoMes(p);
         } else {
             p.dataVencimento = moment(this.dataVencimento).add(dias, 'days').toDate();
             p.valorParcela = this.parcela.valorParcela;
             this.parcelas.push(p);
-            //this.checarDiasDoMes(p);
         }
     }
 
-    /* public checarDiasDoMes(parcela : Parcela){
-        //console.log(new Date(parcela.dataVencimento).getUTCDate());
-    } */
-
+    // LIMPAR O TIPO DE PESSOA SELECIONADA CASO TROQUE DE JURÍDICA/FISÍCA || FISICA/JURÍDICA
+    public checarTipoPessoa(){
+        this.despesa.financiamentoBancario = new FinanciamentoBancario();
+        this.despesa.pessoa = new Pessoa();
+    }
+    
     ngOnInit(): void {
+        this.checarParametro();
         this.listarPessoas();
+        this.listarFinanciamentosBancarios();
     }
 }

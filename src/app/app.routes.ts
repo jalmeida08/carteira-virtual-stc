@@ -1,5 +1,4 @@
 import { Routes, RouterModule } from '@angular/router';
-import { NgModule } from '@angular/core';
 import { PessoaComponent } from './pessoa/pessoa.component';
 import { UsuarioComponent } from './usuario/usuario.component';
 import { PessoaFormComponent } from './pessoa/form/pessoa-form.component';
@@ -9,8 +8,10 @@ import { PagamentoCadastroComponent } from './pagamento/cadastro/pagamento-cadas
 import { ParcelaComponent } from './parcela/parcela.component';
 import { DespesaComponent } from './despesa/despesa.component';
 import { DespesaCadastroComponent } from './despesa/cadastro/despesa-cadastro.component';
+import { LoginComponent } from './login/login.component';
 
 const appRoutes: Routes = [
+    {path: '', component: LoginComponent},
     { path: 'pessoa', component: PessoaComponent },
     { path: 'pessoa/cadastrar', component: PessoaFormComponent },
     { path: 'pessoa/form/:id', component: PessoaFormComponent },
@@ -23,8 +24,9 @@ const appRoutes: Routes = [
     { path: 'parcela', component: ParcelaComponent },
     { path: 'despesa', component: DespesaComponent },
     { path: 'despesa/cadastrar', component: DespesaCadastroComponent },
+    { path: 'despesa/form/:id', component: DespesaCadastroComponent },
 
-    { path: '**', redirectTo: 'pessoa' }
+    { path: '**', redirectTo: '' }
 ];
 
 export const routing = RouterModule.forRoot(appRoutes);

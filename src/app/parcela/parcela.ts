@@ -2,7 +2,7 @@ import { Pagamento } from "../pagamento/pagamento";
 import { Despesa } from "../despesa/despesa";
 
 export class Parcela {
-    public idparcela: number;
+    public idParcela: number;
     public pagamento: Pagamento;
     public despesa: Despesa;
     public valorParcela : number;

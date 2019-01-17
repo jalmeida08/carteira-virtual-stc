@@ -1,75 +1,39 @@
-import { Pessoa } from './pessoa';
 import { Injectable } from '@angular/core';
-import { Http, Headers } from "@angular/http";
+import { HttpClient } from "@angular/common/http";
 import { Response } from "@angular/http/src/static_response";
-import { Observable, pipe } from 'rxjs';
-import { map, filter, catchError, mergeMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { Plataforma } from '../util/plataforma.config';
+import { Pessoa } from './pessoa';
 
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class PessoaService {
-  private _http: Http;
-  private _headers: Headers;
-  private _url: string = "http://localhost:8081/carteiravirtual/resources/pessoa/"
 
-  constructor(http: Http) {
-    this._http = http;
-  }
+    constructor(private _http: HttpClient) {
+        this._http = this._http
+    }
 
-  public salvar(pessoa: Pessoa): Observable<Response> {
-    return this._http
-      .post(
-        this._url,
-        pessoa,
-        { headers: this._headers }
-      );
-  }
+    public salvar(pessoa: Pessoa): Observable<Pessoa> {
+        return this._http.post<Pessoa>(Plataforma.url + 'pessoa/', pessoa);
+    }
 
-  public listar(): Observable<Pessoa[]> {
-    return this._http
-      .get(this._url)
-      .pipe(
-        map(
-          res => res.json()
-        )
-      );
-  };
+    public listar(): Observable<Pessoa[]> {
+        return this._http.get<Pessoa[]>(Plataforma.url + 'pessoa/');
+    };
 
-  public getPessoa(idPessoa: number): Observable<Pessoa> {
-    return this._http
-      .get(this._url + idPessoa)
-      .pipe(
-        map(res => res.json())
-      );
-  }
+    public getPessoa(idPessoa: number): Observable<Pessoa> {
+        return this._http.get<Pessoa>(Plataforma.url + 'pessoa/' + idPessoa);
+    }
 
-  public remover(pessoa: Pessoa): Observable<Response> {
-    return this._http
-      .delete(this._url + pessoa.idPessoa);
-  }
+    public remover(pessoa: Pessoa): Observable<Response> {
+        return this._http.delete<Response>(Plataforma.url + 'pessoa/' + pessoa.idPessoa);
+    }
 
-  public atualizar(pessoa: Pessoa): Observable<Response> {
-    console.log(pessoa.dataNascimento);
-    return this._http
-      .put(
-        this._url,
-        pessoa,
-        { headers: this._headers }
-      );
-  }
+    public atualizar(pessoa: Pessoa): Observable<Response> {
+        return this._http.put<Response>(Plataforma.url + 'pessoa/', pessoa);
+    }
 
-  public buscarNomeDtNascimento(pessoa: Pessoa): Observable<Pessoa> {
-    return this._http
-      .post(
-        this._url + "buscarNome",
-        pessoa,
-        { headers: this._headers }
-      ).pipe(
-        map(
-          res => res.json()
-        )
-      );
-  }
+    public buscarNomeDtNascimento(pessoa: Pessoa): Observable<Pessoa> {
+        return this._http.post<Pessoa>(Plataforma.url + 'pessoa/' + "buscarNome", pessoa);
+    }
 }

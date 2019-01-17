@@ -4,10 +4,8 @@ import { PagamentoService } from './pagamento.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DatePipe } from '@angular/common';
 import { PessoaService } from '../pessoa/pessoa.service';
-import { count } from 'rxjs/operators';
 import { Pessoa } from '../pessoa/pessoa';
 import { Mensagem } from '../alerta/mensagem';
-import { Alert } from 'selenium-webdriver';
 
 @Component({
     selector: 'app-pagamento',

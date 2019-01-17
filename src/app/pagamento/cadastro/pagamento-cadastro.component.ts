@@ -8,6 +8,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { Mensagem } from '../../alerta/mensagem';
 import { Parcela } from '../../parcela/parcela';
+import { Plataforma } from '../../util/plataforma.config';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
     selector: 'app-pagamento-cadastro',
@@ -28,14 +30,14 @@ export class PagamentoCadastroComponent implements OnInit {
         private _pessoaService: PessoaService,
         private _pagamentoService: PagamentoService,
         private _activatedRoute: ActivatedRoute,
-        private _router: Router,
+        private _cookieService: CookieService,
         private _datePipe: DatePipe,
     ) {
         this._pagamentoService = _pagamentoService;
         this._pessoaService = _pessoaService;
         this._activatedRoute = _activatedRoute;
-        this._router = _router;
-        this._datePipe = _datePipe
+        this._datePipe = _datePipe;
+        this._cookieService = _cookieService;
     }
 
     public alerta(
@@ -91,15 +93,14 @@ export class PagamentoCadastroComponent implements OnInit {
 
     }
 
-    /*     public pagamentoFixo(): void {
-            let dataAtual : Date = new Date();
-            if(this.dataPagamento > this._datePipe.transform(dataAtual, 'yyyy-MM-dd')){
-                this.pagamento.statusPagamento = 'ARECEBER';
-            }else{
-                this.pagamento.statusPagamento = 'RECEBIDO';
-            }
-            //this.pagamento.statusPagamento = undefined;
-        } */
+    public pagamentoFixo(): void {
+        let dataAtual: Date = new Date();
+        if (this.dataPagamento > this._datePipe.transform(dataAtual, 'yyyy-MM-dd')) {
+            this.pagamento.statusPagamento = 'ARECEBER';
+        } else {
+            this.pagamento.statusPagamento = 'RECEBIDO';
+        }
+    }
 
     public listarPessoas() {
         this._pessoaService
@@ -131,8 +132,6 @@ export class PagamentoCadastroComponent implements OnInit {
             this.buscarPagamento(idPagamento);
         }
     }
-
-    
 
     ngOnInit(): void {
         this.checarParametro();

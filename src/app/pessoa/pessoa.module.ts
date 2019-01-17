@@ -9,6 +9,7 @@ import { PessoaService } from "./pessoa.service"
 import { PessoaFormComponent } from './form/pessoa-form.component';
 import { routing } from './../app.routes';
 import { AlertaModule } from '../alerta/alerta.module';
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
     declarations: [
@@ -24,6 +25,6 @@ import { AlertaModule } from '../alerta/alerta.module';
         AlertaModule
     ],
     exports: [],
-    providers: [PessoaService]
+    providers: [CookieService, PessoaService]
 })
 export class PessoaModule { }

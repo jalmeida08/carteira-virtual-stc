@@ -1,16 +1,33 @@
 <div class="container">
+<!-- 
+    ====================================================================================================
+    =                                   TELA DE CADASTRO DE DESPESA                                    =
+    ====================================================================================================
+-->
     <form method="POST" (submit)="salvar()">
         <div class="row">
             <div class="col-sm">
                 <div class="form-group">
                     <label for="despesavalor" class="col-form-label">Valor</label>
-                    <input type="text" class="form-control" name="despesavalor" id="despesavalor" [(ngModel)]="despesa.valor">
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="despesavalor"
+                        id="despesavalor"
+                        [(ngModel)]="despesa.valor"
+                    >
                 </div>
             </div>
             <div class="col-sm">
                 <div class="form-group">
                     <label for="dataVencimento" class="col-form-label">Data de vencimento</label>
-                    <input type="date" [disabled]="despesa.parcelado" name="dataVencimento" class="form-control" id="dataVencimento" [(ngModel)]="despesa.dataVencimento">
+                    <input
+                        type="date"
+                        [disabled]="despesa.parcelado"
+                        name="dataVencimento"
+                        class="form-control"
+                        id="dataVencimento"
+                        [(ngModel)]="despesa.dataVencimento">
                 </div>
             </div>
         </div>
@@ -20,6 +37,26 @@
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" name="fixo" id="fixo" [(ngModel)]="despesa.fixo">
                     <label class="form-check-label" for="fixo" >Despesa fixa?</label>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="row">
+                    <div class="col-sm">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="pessoaFisicaJuridica1" value="fisica" [(ngModel)]="pessoaFisicaJuridica" (ngModelChange)="checarTipoPessoa()" name="pessoaFisicaJuridica" >
+                            <label class="form-check-label" for="pessoaFisicaJuridica1">
+                                Pessoa física
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio"  id="pessoaFisicaJuridica2" value="juridica" [(ngModel)]="pessoaFisicaJuridica" (ngModelChange)="checarTipoPessoa()" name="pessoaFisicaJuridica">
+                            <label class="form-check-label" for="pessoaFisicaJuridica2">
+                                Pessoa jurídicas
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -38,19 +75,33 @@
             <div class="col-sm">
                 <div class="form-group">
                     <label class="col-form-label" for="pessoa">Pessoa devedora</label>
-                    <select class="form-control" name="pessoa" id="pessoa" [(ngModel)]="despesa.pessoa.idPessoa">
+                    <select class="form-control" name="pessoa" id="pessoa" [(ngModel)]="despesa.pessoa.idPessoa" *ngIf="pessoaFisicaJuridica == 'fisica'">
                         <option value="undefined">Selecione</option>
                         <option *ngFor="let pessoa of pessoas" [value]="pessoa.idPessoa">{{pessoa.nome}}</option>
+                    </select>
+                    <select class="form-control" name="pessoa" id="pessoa" [(ngModel)]="despesa.financiamentoBancario.idFinanciamentoBancario" *ngIf="pessoaFisicaJuridica == 'juridica'">
+                        <option value="undefined">Selecione</option>
+                        <option *ngFor="let financiamentoBancario of financiamentosBancarios" [value]="financiamentoBancario.idFinanciamentoBancario">{{financiamentoBancario.bandeira}}</option>
                     </select>
                 </div>
             </div>
         </div>
-        <!--  -->
+<!-- 
+    ====================================================================================================
+    =                                           PARCELAS                                               =
+    ====================================================================================================
+-->
 
         <div class="row">
             <div class="col-sm">
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" name="pagamentoParcelado" (click)="limparDataVencimento();" id="pagamentoParcelado" [(ngModel)]="despesa.parcelado">
+                    <input type="checkbox"
+                        class="form-check-input"
+                        name="pagamentoParcelado"
+                        [disabled]="despesa.fixo"
+                        (click)="limparDataVencimento();"
+                        id="pagamentoParcelado"
+                        [(ngModel)]="despesa.parcelado">
                     <label class="form-check-label" for="pagamentoParcelado">Pagamento parcelado?</label>
                 </div>
             </div>
@@ -62,8 +113,14 @@
                 <div class="col-sm">
                     <div class="form-group">
                         <label class="col-form-label" for="qtdParcela">Quantidade de parcelas</label>
-                        <input class="form-control" type="text" id="qtdParcela" (keyup)="calcularValorParcela(); calcularParcelas()" name="qtdParcela"
-                            [(ngModel)]="qtdParcela">
+                        <input
+                            class="form-control"
+                            type="text"
+                            id="qtdParcela"
+                            [(ngModel)]="qtdParcela"
+                            (ngModelChange)="calcularValorParcela(); calcularParcelas()"
+                            name="qtdParcela"
+                            >
                     </div>
                 </div>
                 <div class="col-sm">
@@ -86,38 +143,32 @@
                 <div class="col-sm">
                     <div class="form-group">
                         <label class="col-form-label" for="dataVencimento">Data do vencimento</label>
-                        <input class="form-control" type="date" id="dataVencimento" name="dataVencimento" [(ngModel)]="dataVencimento">
+                        <input
+                            class="form-control" 
+                            type="date"
+                            id="dataVencimento"
+                            [(ngModel)]="dataVencimento"
+                            (ngModelChange)="calcularParcelas()"
+                            name="dataVencimento">
                     </div>
                 </div>
                 <div class="col-sm">
                     <div class="form-group">
                         <label class="col-form-label" for="deQuantosEmQuantosDias">Pagável de quantos em quantos dias</label>
-                        <input class="form-control" type="text" id="deQuantosEmQuantosDias" name="deQuantosEmQuantosDias" [(ngModel)]="deQuantosEmQuantosDias"
-                            [disabled]="!foraDos30Dias">
+                        <input
+                            class="form-control"
+                            type="text"
+                            id="deQuantosEmQuantosDias"
+                            name="deQuantosEmQuantosDias"
+                            [(ngModel)]="deQuantosEmQuantosDias"
+                            [disabled]="!foraDos30Dias"
+                            (ngModelChange)="calcularParcelas()">
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm" style="margin-bottom: 10px">
                     <i class="btn btn-info" (click)="calcularParcelas()">Calcular</i>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-4">
-                    <table *ngIf="parcelas.length > 0" class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <td>Dt de vencimento</td>
-                                <td>Valor da parcela</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let parcela of parcelas">
-                                <td>{{parcela.dataVencimento | date : 'dd/MM/yyyy'}}</td>
-                                <td>{{parcela.valorParcela | currency : 'R$ '}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
@@ -137,4 +188,23 @@
         </div>
         <!--  -->
     </form>
+
+    <div class="row" >
+        <div class="col-sm" style="max-height: 400px; overflow:auto; margin-top: 20px">
+            <table *ngIf="parcelas.length > 0" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <td>Dt de vencimento</td>
+                        <td>Valor da parcela</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let parcela of parcelas">
+                        <td>{{parcela.dataVencimento | date : 'dd/MM/yyyy'}}</td>
+                        <td>{{parcela.valorParcela | currency : 'R$ '}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
