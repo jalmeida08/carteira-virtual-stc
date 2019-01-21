@@ -178,9 +178,8 @@ export class DespesaCadastroComponent implements OnInit {
         this.deQuantosEmQuantosDias = undefined;
         this.despesa.parcela = undefined;
     }
-
-    ///
-    public calcularValorParcela() {
+    
+    public calcularValorParcela(){
         if (this.qtdParcela > 0 && this.despesa.valor > 0) {
             this.parcela.valorParcela = (this.despesa.valor / this.qtdParcela);
         }

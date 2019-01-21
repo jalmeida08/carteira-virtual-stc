@@ -9,6 +9,7 @@ import { routing } from '../app.routes';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserModule } from '@angular/platform-browser';
+import { NgxCurrencyModule } from "ngx-currency";
 
 @NgModule({
     declarations: [
@@ -22,7 +23,8 @@ import { BrowserModule } from '@angular/platform-browser';
         FormsModule,
         routing,
         AlertaModule,
-        ParcelaModule
+        ParcelaModule,
+        NgxCurrencyModule
     ],
     exports: [],
     providers: [DespesaService],

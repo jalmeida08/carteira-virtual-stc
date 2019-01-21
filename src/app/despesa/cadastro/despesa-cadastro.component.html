@@ -14,6 +14,8 @@
                         class="form-control"
                         name="despesavalor"
                         id="despesavalor"
+                        currencyMask
+                        [options]="{prefix: 'R$ ', thousands: '.', decimal: ','}"
                         [(ngModel)]="despesa.valor"
                     >
                 </div>
@@ -126,7 +128,14 @@
                 <div class="col-sm">
                     <div class="form-group">
                         <label class="col-form-label" for="valor">Valor da parcela</label>
-                        <input class="form-control" type="text" id="valor" name="valor" [(ngModel)]="parcela.valorParcela">
+                        <input
+                            class="form-control"
+                            type="text"
+                            id="valor"
+                            name="valor"
+                            currencyMask
+                            [options]="{prefix: 'R$ ', thousands: '.', decimal: ','}"
+                            [(ngModel)]="parcela.valorParcela">
                     </div>
                 </div>
             </div>
